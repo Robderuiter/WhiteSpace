@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - System
+  - Scanner
+  - Planet
+  - Module
+  - Ship
+  - Background
+  - Flavor
+  - UIpanel
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - Planets
+  - 
+  - 
+  - Ship
+  - Modules
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - Backgrounds
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Background
+    uniqueID: 1456607141
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Everything Else
+    uniqueID: 2638931775
+    locked: 0
