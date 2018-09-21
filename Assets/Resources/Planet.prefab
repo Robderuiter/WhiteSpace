@@ -25,7 +25,6 @@ GameObject:
   - component: {fileID: 58230127241622578}
   - component: {fileID: 114693100558573606}
   - component: {fileID: 114443966301463426}
-  - component: {fileID: 114240805156439288}
   m_Layer: 10
   m_Name: Planet
   m_TagString: Planet
@@ -81,18 +80,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 1.28
---- !u!114 &114240805156439288
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1967464829051012}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ee7a7c976a47af44bb04e0e91d559b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isSelected: 0
 --- !u!114 &114443966301463426
 MonoBehaviour:
   m_ObjectHideFlags: 1

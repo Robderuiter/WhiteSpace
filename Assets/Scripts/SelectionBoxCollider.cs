@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class SelectionBoxCollider : MonoBehaviour {
 
-
-	//## commented since selectionmaster rewrite dd21-09-2018
+	/* //## commented since selectionmaster rewrite dd21-09-2018
 	void OnTriggerEnter2D (Collider2D otherCol){
 		//first check if the othercollider's gameobject has a selectable, to prevent errors
 		if (otherCol.gameObject.GetComponent<Selectable> ()) {
@@ -40,6 +39,6 @@ public class SelectionBoxCollider : MonoBehaviour {
 			}  
 		}
 	}
-
+	*/
 }
 

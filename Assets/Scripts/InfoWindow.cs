@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class InfoWindow : MonoBehaviour {
 
 	//infowindow stuff
-	GameObject infoPanel;
-	float infoPanelWidth;
+	//GameObject infoPanel;
+	//float infoPanelWidth;
 	Text[] infoHeaderText;
 	Image[] infoHeaderImg;
 	CurrentResources currentRes;
@@ -22,9 +22,9 @@ public class InfoWindow : MonoBehaviour {
 	public GameObject selectedObject;
 
 	void Awake (){
-		infoPanel = this.gameObject;
+		//infoPanel = this.gameObject;
 
-		infoPanelWidth = infoPanel.GetComponent<RectTransform> ().sizeDelta.x;
+		//infoPanelWidth = infoPanel.GetComponent<RectTransform> ().sizeDelta.x;
 
 		infoHeaderText = GameObject.Find ("InfoHeader").GetComponentsInChildren<Text> ();
 		infoHeaderImg = GameObject.Find ("InfoHeader").GetComponentsInChildren<Image> ();

@@ -192,11 +192,13 @@ public class Planet : MonoBehaviour {
 			//set the ticker on currentResources on
 			currentRes.isActive = true;
 
-
+			/*
+			//##
 			//update infowindow if scanned
 			if (GetComponent<Selectable>().infoW) {
 				GetComponent<Selectable> ().infoW.UpdateFloatingInfo();
 			}
+			*/
 		}
 	}
 

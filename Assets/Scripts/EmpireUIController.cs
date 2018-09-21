@@ -7,7 +7,7 @@ public class EmpireUIController : MonoBehaviour {
 
 	Empire empire;
 	int nPanels = 3;
-	GameObject empireOverviewPanel;
+	//GameObject empireOverviewPanel;
 	GameObject empirePlanetsPanel;
 	GameObject empireShipsPanel;
 	GameObject empireResourcesPanel;
@@ -16,7 +16,7 @@ public class EmpireUIController : MonoBehaviour {
 	//rectTransforms for gameobject placement on ui
 	RectTransform empirePlanetsRect;
 	RectTransform empireShipsRect;
-	RectTransform empireResourcesRect;
+	//RectTransform empireResourcesRect;
 
 	GameObject shipImgPrefab;
 	GameObject planetImgPrefab;
@@ -40,7 +40,7 @@ public class EmpireUIController : MonoBehaviour {
 
 	void Start(){
 		//get ref to panels
-		empireOverviewPanel = GameObject.Find("EmpireOverview");
+		//empireOverviewPanel = GameObject.Find("EmpireOverview");
 		empirePlanetsPanel = GameObject.Find ("EmpirePlanets");
 		empireShipsPanel = GameObject.Find ("EmpireShips");
 		empireResourcesPanel = GameObject.Find ("EmpireResources");
@@ -48,7 +48,7 @@ public class EmpireUIController : MonoBehaviour {
 		//get all rectTransforms
 		empirePlanetsRect = empirePlanetsPanel.GetComponent<RectTransform>();
 		empireShipsRect = empireShipsPanel.GetComponent<RectTransform> ();
-		empireResourcesRect = empireResourcesPanel.GetComponent<RectTransform>();
+		//empireResourcesRect = empireResourcesPanel.GetComponent<RectTransform>();
 
 		//set sizes of all empire subpanels, //@@ @max i know i know, runs 3 times outside of a loop, boohoo! :P
 		timesRan = 0;

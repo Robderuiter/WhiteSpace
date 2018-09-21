@@ -27,7 +27,7 @@ public class SelectionMaster : MonoBehaviour {
 	GameObject selectionBox;
 	Vector2 selectionStartPosWorld;
 	Vector2 selectionEndPosWorld;
-	Vector2 selectionStartPosForWorld;
+	//Vector2 selectionStartPosForWorld;
 	float selectionWidth;
 	float selectionHeight;
 	Vector2 selectionCenter;
@@ -42,7 +42,7 @@ public class SelectionMaster : MonoBehaviour {
 	bool isSingleClick;
 
 	//Commands / right mouse button
-	Vector2 mousePos;
+	//Vector2 mousePos;
 	Ship selectableShip;
 	public bool isRightClick = false;
 	//Module selectableModule;
@@ -83,7 +83,7 @@ public class SelectionMaster : MonoBehaviour {
 			timeMouseDown = Time.time;
 
 			selectionStartPos = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
-			selectionStartPosForWorld = Input.mousePosition;
+			//selectionStartPosForWorld = Input.mousePosition;
 			isSelecting = true;
 		}
 
@@ -111,7 +111,7 @@ public class SelectionMaster : MonoBehaviour {
 			selectionEndPos = Input.mousePosition;
 
 			//turn on, center and resize the selection boxcollider
-			SetSelectionBox();
+		//##	SetSelectionBox();
 		} else if(selectionBox.activeSelf && isLeftClick){
 			//if there are any selectable in selectedsubtypes, filter, then select them
 			if (selectedShips.Count > 0 || selectedPlanets.Count > 0 || selectedModules.Count > 0) {
@@ -130,17 +130,17 @@ public class SelectionMaster : MonoBehaviour {
 			camController.isFocussed = false;
 
 			//need to check which object is hit here as well..
-			mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+			//mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 
 			//needed for SelectionBoxCollider class
 			isRightClick = true;
 
 			//needed for SetSelectionBox()
 			isSingleClick = true;
-			selectionStartPosForWorld = Input.mousePosition;
+			//selectionStartPosForWorld = Input.mousePosition;
 			selectionEndPos = Input.mousePosition;
 
-			SetSelectionBox ();
+		 //##	SetSelectionBox ();
 		} else if (isRightClick && selectedWithRMB.Count > 0) {
 
 		}
@@ -163,6 +163,7 @@ public class SelectionMaster : MonoBehaviour {
 		}
 	}
 
+	/* //## needs to be rewritten to be included on the SelectionMaster gameObject itself
 	//activate, work some magic (:P) if singleclick and then set the size for the selectionbox
 	void SetSelectionBox(){
 		selectionBox.SetActive (true);
@@ -186,6 +187,7 @@ public class SelectionMaster : MonoBehaviour {
 		selectionBox.transform.position = selectionCenter;
 		selectionBox.GetComponent<BoxCollider2D> ().size = new Vector2 (selectionWidth, selectionHeight);
 	}
+	*/
 
 	/*
 	//@@ hier lijkt iets fout te gaan, selectedType print is altijd ship, ook als je ctrl/shift drukt (en deze functie nooit zou moeten runnen)

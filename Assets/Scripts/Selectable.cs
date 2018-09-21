@@ -6,6 +6,9 @@ public enum SelectableType {Ship, Planet, Module};
 
 public class Selectable : MonoBehaviour {
 
+	/*
+	//## completely redundant with selectionmaster rewrite?
+
 	//selection
 	public bool isSelected;
 
@@ -118,4 +121,5 @@ public class Selectable : MonoBehaviour {
 		Destroy (selectionBar);
 		infoW = null;
 	}
+	*/
 }

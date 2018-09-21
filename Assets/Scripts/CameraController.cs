@@ -23,14 +23,14 @@ public class CameraController : MonoBehaviour {
 	//focus variables
 	float infoPanelWidth;
 	float empireInfoPanelHeight;
-	float cameraHeight;
+	//float cameraHeight;
 	Vector2 focusCenter;
 	Vector2 cameraCenter;
 	Vector2 focusOffset;
 	public bool isFocussed = false;
 
 	void Awake () {
-		cameraHeight = -10;
+		//cameraHeight = -10;
 	}
 
 	// Use this for initialization
