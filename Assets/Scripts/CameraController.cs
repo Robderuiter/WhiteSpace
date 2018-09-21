@@ -43,6 +43,12 @@ public class CameraController : MonoBehaviour {
 		//for focus, just checked: is constant despite Camera.main.orthographicSize
 		infoPanelWidth = GameObject.Find("InfoWindow").GetComponent<RectTransform>().sizeDelta.x;
 		empireInfoPanelHeight = GameObject.Find("EmpireOverview").GetComponent<RectTransform>().sizeDelta.y;
+
+		//calculate offset based on empire UI and planet info UI
+		cameraCenter = Camera.main.ScreenToWorldPoint(new Vector2 (Screen.width / 2, Screen.height / 2));
+		focusCenter = Camera.main.ScreenToWorldPoint(new Vector2 ((Screen.width - infoPanelWidth) / 2, (Screen.height - empireInfoPanelHeight) / 2));
+		focusOffset = cameraCenter - focusCenter;
+		//print ("cameraCenter = " + cameraCenter + ", focusCenter = " + focusCenter + ", focusOffset = " + focusOffset);
 	}
 	
 	// Update is called once per frame
@@ -123,12 +129,6 @@ public class CameraController : MonoBehaviour {
 	public void Focus (Transform target){
 		//set zoom level
 		Camera.main.orthographicSize = 2.5f;
-
-		//calculate offset based on empire UI and planet info UI
-		cameraCenter = Camera.main.ScreenToWorldPoint(new Vector2 (Screen.width / 2, Screen.height / 2));
-		focusCenter = Camera.main.ScreenToWorldPoint(new Vector2 ((Screen.width - infoPanelWidth) / 2, (Screen.height - empireInfoPanelHeight) / 2));
-		focusOffset = cameraCenter - focusCenter;
-		//print ("cameraCenter = " + cameraCenter + ", focusCenter = " + focusCenter + ", focusOffset = " + focusOffset);
 	
 		//actually move the camera
 		transform.Translate(new Vector3(target.position.x - transform.position.x + focusOffset.x, target.position.y - transform.position.y - focusOffset.y,0));

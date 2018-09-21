@@ -23,7 +23,6 @@ GameObject:
   - component: {fileID: 114255825009667194}
   - component: {fileID: 50201773426807658}
   - component: {fileID: 58398264092818462}
-  - component: {fileID: 114413797268133640}
   m_Layer: 14
   m_Name: Module
   m_TagString: Module
@@ -38,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1399582663690760}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.996, y: 1.164, z: 0}
+  m_LocalPosition: {x: -77.15155, y: 405.6764, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -90,24 +89,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5cd8b52632324591ab93d2de97e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  homePlanet: {fileID: 0}
+  planet: {fileID: 0}
+  hasLanded: 0
   waterOnModule: 0
   nWaterExtracted: 0
---- !u!114 &114413797268133640
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1399582663690760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff89405237dd3384eb1b3a094ba71223, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selected: 0
-  selectedPlanet: {fileID: 0}
-  modIsSelected: 0
-  test: 0
-  selectionMaster: {fileID: 0}
+  currentRes: {fileID: 0}
+  targetRes: {fileID: 0}
+  nExtracted: 0
+  storage: 0
 --- !u!212 &212257125122972316
 SpriteRenderer:
   m_ObjectHideFlags: 1
