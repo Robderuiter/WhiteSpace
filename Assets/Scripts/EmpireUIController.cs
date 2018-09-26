@@ -12,6 +12,7 @@ public class EmpireUIController : MonoBehaviour {
 	GameObject empireShipsPanel;
 	GameObject empireResourcesPanel;
 	int timesRan;
+	float panelWidth;
 
 	//rectTransforms for gameobject placement on ui
 	RectTransform empirePlanetsRect;
@@ -52,6 +53,7 @@ public class EmpireUIController : MonoBehaviour {
 
 		//set sizes of all empire subpanels, //@@ @max i know i know, runs 3 times outside of a loop, boohoo! :P
 		timesRan = 0;
+		panelWidth = Screen.width / nPanels;
 		PositionEmpireUI(empirePlanetsPanel);
 		PositionEmpireUI(empireShipsPanel);
 		PositionEmpireUI(empireResourcesPanel);
@@ -69,8 +71,9 @@ public class EmpireUIController : MonoBehaviour {
 	//run once to adjust ui panel sizes to screen size
 	void PositionEmpireUI(GameObject panel){
 		RectTransform rectT = panel.GetComponent<RectTransform>();
-		rectT.sizeDelta = new Vector2(Screen.width / nPanels, rectT.rect.height);
-		rectT.position = new Vector2(Screen.width / nPanels * timesRan, 0);
+		rectT.sizeDelta = new Vector2(panelWidth, rectT.rect.height);
+		rectT.localPosition = new Vector2 (panelWidth * timesRan - Screen.width / 2, 0);
+		print (rectT.localPosition);
 		timesRan++;
 	}
 
