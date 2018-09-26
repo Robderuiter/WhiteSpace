@@ -43,7 +43,7 @@ public class SystemSpawner : MonoBehaviour {
 				//print("system["+j+"] = " + systems[j]);
 
 				spawnedSystems.Add (systems [j]);
-				print (systems[j] + " succesfully added to spawnedSystem list, for a total of " + spawnedSystems.Count + " systems");
+				//print (systems[j] + " succesfully added to spawnedSystem list, for a total of " + spawnedSystems.Count + " systems");
 			}
 
 		}

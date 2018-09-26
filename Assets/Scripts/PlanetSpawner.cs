@@ -73,7 +73,7 @@ public class PlanetSpawner : MonoBehaviour {
 
 			//save to spawnedPlanets list:
 			spawnedPlanets.Add(planet.GetComponent<Planet>());
-			print (planet.GetComponent<Planet>() + " succesfully added to spawnPlanet list, for a total of " + spawnedPlanets.Count + " planets");
+			//print (planet.GetComponent<Planet>() + " succesfully added to spawnPlanet list, for a total of " + spawnedPlanets.Count + " planets");
 		}
 	}
 		

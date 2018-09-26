@@ -73,7 +73,6 @@ public class EmpireUIController : MonoBehaviour {
 		RectTransform rectT = panel.GetComponent<RectTransform>();
 		rectT.sizeDelta = new Vector2(panelWidth, rectT.rect.height);
 		rectT.localPosition = new Vector2 (panelWidth * timesRan - Screen.width / 2, 0);
-		print (rectT.localPosition);
 		timesRan++;
 	}
 
