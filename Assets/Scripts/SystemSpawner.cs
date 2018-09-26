@@ -15,6 +15,8 @@ public class SystemSpawner : MonoBehaviour {
 	GameObject system;
 	Vector2 spawnPos;
 
+	public List<GameObject> spawnedSystems = new List<GameObject>();
+
 	// Use this for initialization
 	void Start () {
 		systemPrefab = (GameObject) Resources.Load ("System");
@@ -39,6 +41,9 @@ public class SystemSpawner : MonoBehaviour {
 				//leaves increasing gaps as more and more systems spawns, it becomes harder to find a new spawn spot
 				systems[j] = GameObject.Instantiate (systemPrefab, spawnPos, transform.rotation);
 				//print("system["+j+"] = " + systems[j]);
+
+				spawnedSystems.Add (systems [j]);
+				print (systems[j] + " succesfully added to spawnedSystem list, for a total of " + spawnedSystems.Count + " systems");
 			}
 
 		}

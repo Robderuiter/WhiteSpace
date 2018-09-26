@@ -27,6 +27,8 @@ public class PlanetSpawner : MonoBehaviour {
 	GameObject[] planets;
 	Vector2 spawnPos;
 
+	//list of all planets spawned in this system, public for easy checking
+	public List<Planet> spawnedPlanets = new List<Planet>();
 
 	// Use this for initialization
 	void Start () {
@@ -69,16 +71,9 @@ public class PlanetSpawner : MonoBehaviour {
 			planet.transform.parent = gameObject.transform;
 			planet.GetComponent<PlanetMovement> ().SetCenter (planet.transform.parent.position);
 
-			//planet.GetComponent<Planet> ().planetSize = planetSize;
-
-			//update Planet's planetSize based on instantiate vars
-			//planet.GetComponent<Planet>().planetSize = planetSize;
-
-			//print ("orbitRadius = " + orbitRadius +", orbitSection = " + orbitSection + ", spawnPos = " + spawnPos + ", planet.transform.parent.position = " + planet.transform.parent.position);
-			//planet.GetComponent<Planet>().planetSize = planetSize;
-
-			//save in array for future reference
-			//planets [i] = planet; //planets[i] = instantiate werkte niet direct, geeft nu ook af en toe gezeik, ben ik al weleens tegengekomen
+			//save to spawnedPlanets list:
+			spawnedPlanets.Add(planet.GetComponent<Planet>());
+			print (planet.GetComponent<Planet>() + " succesfully added to spawnPlanet list, for a total of " + spawnedPlanets.Count + " planets");
 		}
 	}
 		
