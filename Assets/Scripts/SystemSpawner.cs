@@ -44,6 +44,7 @@ public class SystemSpawner : MonoBehaviour {
 
 				spawnedSystems.Add (systems [j]);
 				//print (systems[j] + " succesfully added to spawnedSystem list, for a total of " + spawnedSystems.Count + " systems");
+				systems[j].transform.SetParent(this.transform);
 			}
 
 		}

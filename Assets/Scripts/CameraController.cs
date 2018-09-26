@@ -22,7 +22,7 @@ public class CameraController : MonoBehaviour {
 
 	//focus variables
 	float infoPanelWidth;
-	float empireInfoPanelHeight;
+	float InfoPanelHeight;
 	//float cameraHeight;
 	Vector2 focusCenter;
 	Vector2 cameraCenter;
@@ -41,13 +41,23 @@ public class CameraController : MonoBehaviour {
 		bgSpeed = mainSpeed / 2;
 
 		//for focus, just checked: is constant despite Camera.main.orthographicSize
-		infoPanelWidth = GameObject.Find("InfoWindow").GetComponent<RectTransform>().sizeDelta.x;
-		empireInfoPanelHeight = GameObject.Find("EmpireOverview").GetComponent<RectTransform>().sizeDelta.y;
+		//infoPanelWidth = GameObject.Find("InfoWindow").GetComponent<RectTransform>().sizeDelta.x;
+		infoPanelWidth = GameObject.Find("InfoWindow").GetComponent<RectTransform>().rect.width;
+		InfoPanelHeight = GameObject.Find("EmpireOverview").GetComponent<RectTransform>().sizeDelta.y;
 
+		/* not working properly but used to work..
 		//calculate offset based on empire UI and planet info UI
 		cameraCenter = Camera.main.ScreenToWorldPoint(new Vector2 (Screen.width / 2, Screen.height / 2));
-		focusCenter = Camera.main.ScreenToWorldPoint(new Vector2 ((Screen.width - infoPanelWidth) / 2, (Screen.height - empireInfoPanelHeight) / 2));
+		focusCenter = Camera.main.ScreenToWorldPoint(new Vector2 ((Screen.width - infoPanelWidth) / 2, (Screen.height - InfoPanelHeight) / 2));
 		focusOffset = cameraCenter - focusCenter;
+		print ("screen width = " + Screen.width + ", height = " + Screen.height);
+		print ("cameraCenter = " + cameraCenter + ", focusCenter = " + focusCenter + ", focusOffset = " + focusOffset);
+		*/
+
+		cameraCenter = new Vector2 (Screen.width / 2, Screen.height / 2);
+		focusCenter = new Vector2 ((Screen.width - infoPanelWidth) / 2, (Screen.height - InfoPanelHeight) / 2);
+		focusOffset = cameraCenter - focusCenter;
+		//print ("screen width = " + Screen.width + ", height = " + Screen.height);
 		//print ("cameraCenter = " + cameraCenter + ", focusCenter = " + focusCenter + ", focusOffset = " + focusOffset);
 	}
 	
@@ -131,6 +141,7 @@ public class CameraController : MonoBehaviour {
 		Camera.main.orthographicSize = 2.5f;
 	
 		//actually move the camera
-		transform.Translate(new Vector3(target.position.x - transform.position.x + focusOffset.x, target.position.y - transform.position.y - focusOffset.y,0));
+		//transform.Translate(new Vector3(target.position.x - transform.position.x + focusOffset.x, target.position.y - transform.position.y - focusOffset.y,0));
+		transform.position = new Vector3(target.position.x - focusOffset.x, target.position.y + focusOffset.y, transform.position.z);
 	}
 }

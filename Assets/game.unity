@@ -619,7 +619,7 @@ GameObject:
   - component: {fileID: 341425971}
   - component: {fileID: 341425972}
   m_Layer: 0
-  m_Name: SystemSpawner
+  m_Name: Universe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -649,6 +649,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 028bb88eadcafc54ab784c1a782b2da4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnedSystems: []
 --- !u!1 &393101574
 GameObject:
   m_ObjectHideFlags: 0
