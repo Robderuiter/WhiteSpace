@@ -14,6 +14,7 @@ public class CameraController : MonoBehaviour {
 	float shiftAdd = 20; //multiplied by how long shift is held.  Basically running
 	float maxShift = 100; //Maximum speed when holdin gshift
 	private float totalRun= 1;
+	float camHeight;
 
 	//paralex scrolling background
 	Transform bgTransform;
@@ -30,7 +31,7 @@ public class CameraController : MonoBehaviour {
 	public bool isFocussed = false;
 
 	void Awake () {
-		//cameraHeight = -10;
+		camHeight = -10;
 	}
 
 	// Use this for initialization
@@ -43,7 +44,7 @@ public class CameraController : MonoBehaviour {
 		//for focus, just checked: is constant despite Camera.main.orthographicSize
 		//infoPanelWidth = GameObject.Find("InfoWindow").GetComponent<RectTransform>().sizeDelta.x;
 		infoPanelWidth = GameObject.Find("InfoWindow").GetComponent<RectTransform>().rect.width;
-		InfoPanelHeight = GameObject.Find("EmpireOverview").GetComponent<RectTransform>().sizeDelta.y;
+		InfoPanelHeight = GameObject.Find("EmpireOverview").GetComponent<RectTransform>().rect.height;
 
 		/* not working properly but used to work..
 		//calculate offset based on empire UI and planet info UI
@@ -57,8 +58,8 @@ public class CameraController : MonoBehaviour {
 		cameraCenter = new Vector2 (Screen.width / 2, Screen.height / 2);
 		focusCenter = new Vector2 ((Screen.width - infoPanelWidth) / 2, (Screen.height - InfoPanelHeight) / 2);
 		focusOffset = cameraCenter - focusCenter;
-		//print ("screen width = " + Screen.width + ", height = " + Screen.height);
-		//print ("cameraCenter = " + cameraCenter + ", focusCenter = " + focusCenter + ", focusOffset = " + focusOffset);
+		print ("screen width = " + Screen.width + ", height = " + Screen.height);
+		print ("cameraCenter = " + cameraCenter + ", focusCenter = " + focusCenter + ", focusOffset = " + focusOffset);
 	}
 	
 	// Update is called once per frame
@@ -97,7 +98,7 @@ public class CameraController : MonoBehaviour {
 
 		//probeersel cam focus op planet
 		if (isFocussed) {
-			Focus(SelectionMaster.instance.selectedPlanets[0].GetComponent<Transform>());
+			Focus(SelectionMaster.instance.selectedPlanets[0].gameObject.GetComponent<Transform>());
 		}
 	}
 
@@ -140,8 +141,10 @@ public class CameraController : MonoBehaviour {
 		//set zoom level
 		Camera.main.orthographicSize = 2.5f;
 	
+		transform.position = new Vector3 (target.position.x + focusOffset.x, target.position.y - focusOffset.y, transform.position.z);
+
 		//actually move the camera
 		//transform.Translate(new Vector3(target.position.x - transform.position.x + focusOffset.x, target.position.y - transform.position.y - focusOffset.y,0));
-		transform.position = new Vector3(target.position.x - focusOffset.x, target.position.y + focusOffset.y, transform.position.z);
+		//transform.position = new Vector3(target.position.x + focusOffset.x, target.position.y - focusOffset.y, transform.position.z);
 	}
 }

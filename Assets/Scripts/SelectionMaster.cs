@@ -9,11 +9,11 @@ public class SelectionMaster : MonoBehaviour {
 
 	public static SelectionMaster instance;
 
-	public List<Selectable> selectedObjects = new List<Selectable>();
-	public List<Selectable> selectedShips = new List<Selectable>();
-	public List<Selectable> selectedPlanets = new List<Selectable>();
-	public List<Selectable> selectedModules = new List<Selectable>();
-	public List<Selectable> selectedWithRMB = new List<Selectable>();
+	public List<Collider2D> selectedObjects = new List<Collider2D>();
+	public List<Collider2D> selectedShips = new List<Collider2D>();
+	public List<Collider2D> selectedPlanets = new List<Collider2D>();
+	public List<Collider2D> selectedModules = new List<Collider2D>();
+	public List<Collider2D> selectedWithRMB = new List<Collider2D>();
 
 	//group selection
 	Vector2 selectionStartPos;
@@ -22,11 +22,10 @@ public class SelectionMaster : MonoBehaviour {
 	bool isSelecting;
 	Texture2D selectionBoxTexture;
 	Rect selectionRect = new Rect(-10000,-10000,0,0);
-	GameObject selectionColliderPrefab;
-	GameObject selectionBox;
-	//Vector2 selectionStartPosWorld;
-	//Vector2 selectionEndPosWorld;
-	//Vector2 selectionStartPosForWorld;
+	//GameObject selectionBox;
+	Vector2 selectionStartPosWorld;
+	Vector2 selectionEndPosWorld;
+	Vector2 selectionStartPosForWorld;
 	float selectionWidth;
 	float selectionHeight;
 	Vector2 selectionCenter;
@@ -65,9 +64,6 @@ public class SelectionMaster : MonoBehaviour {
 	//purely for testing camera focus
 	void Start(){
 		camController = Camera.main.GetComponent<CameraController> ();
-
-		camController.Focus(GameObject.Find ("Sun").GetComponent<Transform>());
-		//print (GameObject.Find ("Sun").GetComponent<Transform>());
 	}
 	
 	// Update is called once per frame
@@ -85,6 +81,8 @@ public class SelectionMaster : MonoBehaviour {
 
 		//start selecting stuff on left mousebuttonup
 		if (Input.GetMouseButtonUp(0)){
+			ClearSelections ();
+
 			isLeftClick = true;
 
 			//stop drawing gui box
@@ -103,20 +101,22 @@ public class SelectionMaster : MonoBehaviour {
 			selectionEndPos = Input.mousePosition;
 
 			//turn on, center and resize the selection boxcollider
-			//SetSelectionBox();
-		} //else if(selectionBox.activeSelf && isLeftClick){
+			SetSelectionBox();
+		} 
+		//this is where you turn off the selectionbox, and so where postselectionfiltering should apply
 		else if(selectBox.isActiveAndEnabled && isLeftClick){
 			//if there are any selectable in selectedsubtypes, filter, then select them
 			if (selectedShips.Count > 0 || selectedPlanets.Count > 0 || selectedModules.Count > 0) {
-				//## FilterSelection ();
-				print ("something .count > 0");
+				FilterPostSelection ();
 			}
 
 			//turn off the selectionBox
 			selectBox.enabled = false;
-
 			isLeftClick = false;
+			//print ("selectBox.enabled = " + selectBox.enabled);
 		}
+
+
 		/*
 		//if right mouse button, command
 		if (Input.GetMouseButtonUp (1)) {
@@ -157,84 +157,80 @@ public class SelectionMaster : MonoBehaviour {
 		}
 	}
 
-	/*
+	//this is where the selection magic happens: in Update() we flick the colliders on/off, the moment it turns on, we add collided objects to seperate lists:
+	void OnTriggerEnter2D (Collider2D otherCol){
+		//print ("ontriggerenter otherCol.gameObject = " + otherCol.gameObject);
+		if (otherCol.gameObject.tag == "Ship") {
+			selectedShips.Add (otherCol);
+			//print ("selectedShips.count = " + selectedShips.Count + ", added " + otherCol.gameObject);
+		}
+
+		if (otherCol.gameObject.tag == "Planet") {
+			selectedPlanets.Add (otherCol);
+			//print ("selectedPlanets.count = " + selectedPlanets.Count + ", added " + otherCol.gameObject);
+		}
+
+		if (otherCol.gameObject.tag == "Module"){
+			selectedModules.Add (otherCol);
+			//print ("selectedModules.count = " + selectedModules.Count + ", added " + otherCol.gameObject);
+		}
+	}
+
+	//calculate size of the selection box based on mouse input
 	void SetSelectionBox(){
 		selectBox.enabled = true;
+		//print ("selectBox.enabled = " + selectBox.enabled);
 
-		//get stuff to calculate with
-		selectionStartPosWorld = Camera.main.ScreenToWorldPoint (selectionStartPosForWorld);
+		//convert screen to world point, calculate box center
+		selectionStartPosWorld = Camera.main.ScreenToWorldPoint (selectionStartPos);
 		selectionEndPosWorld = Camera.main.ScreenToWorldPoint (selectionEndPos);
 		selectionCenter = new Vector2 ((selectionEndPosWorld.x + selectionStartPosWorld.x) / 2, (selectionEndPosWorld.y + selectionStartPosWorld.y) / 2);
 
-		//check for single click, else do "normal" group selection
+		//set box width and height, check for single click, else do "normal" group selection
 		if (isSingleClick){
 			selectionWidth = 1;
 			selectionHeight = 1;
 		} else {
-			selectionWidth = Mathf.Abs (selectionEndPosWorld.x - selectionStartPosWorld.x);
-			selectionHeight = Mathf.Abs (selectionEndPosWorld.y - selectionStartPosWorld.y);
-			//print ("selectionWidth = " + selectionWidth + ", selectionHeight = " + selectionHeight);
+			selectionWidth = selectionEndPosWorld.x - selectionStartPosWorld.x;
+			selectionHeight = selectionEndPosWorld.y - selectionStartPosWorld.y;
 		}
+		//print ("selectionWidth = " + selectionWidth + ", selectionHeight = " + selectionHeight);
 
 		//set center and size
 		selectBox.transform.position = selectionCenter;
-		selectBox.size = new Vector2 (selectionWidth, selectionHeight);
+		selectBox.size = new Vector2 (Mathf.Abs(selectionWidth), Mathf.Abs(selectionHeight));
 	}
-	*/
-
-	/* //## needs to be rewritten to be included on the SelectionMaster gameObject itself
-	//activate, work some magic (:P) if singleclick and then set the size for the selectionbox
-	void SetSelectionBox(){
-		selectionBox.SetActive (true);
-
-		//get stuff to calculate with
-		selectionStartPosWorld = Camera.main.ScreenToWorldPoint (selectionStartPosForWorld);
-		selectionEndPosWorld = Camera.main.ScreenToWorldPoint (selectionEndPos);
-		selectionCenter = new Vector2 ((selectionEndPosWorld.x + selectionStartPosWorld.x) / 2, (selectionEndPosWorld.y + selectionStartPosWorld.y) / 2);
-
-		//check for single click, else do "normal" group selection
-		if (isSingleClick){
-			selectionWidth = 1;
-			selectionHeight = 1;
-		} else {
-			selectionWidth = Mathf.Abs (selectionEndPosWorld.x - selectionStartPosWorld.x);
-			selectionHeight = Mathf.Abs (selectionEndPosWorld.y - selectionStartPosWorld.y);
-			//print ("selectionWidth = " + selectionWidth + ", selectionHeight = " + selectionHeight);
-		}
-
-		//set center and size
-		selectionBox.transform.position = selectionCenter;
-		selectionBox.GetComponent<BoxCollider2D> ().size = new Vector2 (selectionWidth, selectionHeight);
-	}
-	*/
-
-	/*
-	//@@ hier lijkt iets fout te gaan, selectedType print is altijd ship, ook als je ctrl/shift drukt (en deze functie nooit zou moeten runnen)
-	//filter the currently selectedobjects, ship > planet > module unless ctrl/shift are pressed (which are pre-filtered in SelectionBoxCollider)
-	public void FilterSelection(){
-		if (selectedShips.Count > 0) {
-			SelectSelectedObjects(selectedShips);
-			selectedType = SelectableType.Ship;
-			print ("selectedType = " + selectedType);
-		} else if (selectedModules.Count > 0 && selectedShips.Count < 1) {
-			SelectSelectedObjects(selectedModules);
-			selectedType = SelectableType.Module;
-			print ("selectedType = " + selectedType);
-		} else if (selectedPlanets.Count > 0) {
-			//only runs once.. xD
-			//camController.Focus (selectedPlanets[0].GetComponent<Transform>());
-
-			camController.isFocussed = true;
-		}
-	}
-
-	//clears the temporary lists used for selection filtering
-	void ClearFilteredSelection(){
-		selectedShips.Clear ();
+		
+	//clear all the selection lists for LMB
+	void ClearSelections(){
+		selectedObjects.Clear ();
 		selectedPlanets.Clear ();
+		selectedShips.Clear ();
 		selectedModules.Clear ();
+
+		print ("selected objects, planets, ships and modules cleared");
 	}
-	*/
+
+	//filter selection to selectedObjects list based on number of selectedStuff in each subcategory (ship, planet, module)
+	void FilterPostSelection(){
+		//always prioritize selecting ships
+		if (selectedShips.Count > 0){
+			selectedObjects = selectedShips;
+		}
+		else if (selectedPlanets.Count > 0){
+			selectedObjects = selectedPlanets;
+
+			if (selectedObjects.Count == 1) {
+				//crude?
+				camController.isFocussed = true;
+				camController.Focus (selectedObjects[0].GetComponent<Transform>());
+			}
+		}
+		else if (selectedModules.Count > 0){
+			selectedObjects = selectedModules;
+		}
+		print ("selectedObjects = " + selectedObjects + ", .count = " + selectedObjects.Count);
+	}
 
 	/*
 	//run the Select function on each selected object, creating a "selection box" and an infowindow

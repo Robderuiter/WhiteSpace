@@ -2693,7 +2693,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -2733,11 +2733,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c50a09993b0ed444a738f3fd4ad34d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedObjects: []
-  selectedShips: []
-  selectedPlanets: []
-  selectedModules: []
-  selectedWithRMB: []
   selectedType: 0
   selectableType: 0
   isLeftClick: 0
