@@ -11,6 +11,7 @@ public class Desert : Planet {
 		planetType = 2;
 
 		sprite = Resources.Load<Sprite>("PlanetTypes/Desert");
+		flavorSprite = Resources.Load<Sprite> ("FlavorSprites/planetdesert");
 
 		//for some reason doesnt work when i put this in the Planet class
 		planetSize = GetComponent<CircleCollider2D>().radius * transform.localScale.x;

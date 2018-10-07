@@ -5,81 +5,100 @@ using UnityEngine.UI;
 
 public class InfoWindow : MonoBehaviour {
 
-	//infowindow stuff
-	//GameObject infoPanel;
-	//float infoPanelWidth;
+	//this gameobject will be switched on/off in selectionmaster and get fed the target object to display, since there's only one infowindow and it only has to work when something is selected, it should be ok to use update 
+	//notes: gotta do some size checking, probably on awake: use sizes depending on screen size/other element's sizes
+
+	Planet selectedPlanet;
+
+	//UI element containers
 	Text[] infoHeaderText;
 	Image[] infoHeaderImg;
-	CurrentResources currentRes;
+	Text[] infoResourceText;
 
-	//flavor sprites
+	//flavorsprites
 	Sprite earthlikeFlavor;
 	Sprite desertFlavor;
 	Sprite barrenFlavor;
 	Sprite shipFlavor;
 
-	//should replace with Selectable
-	public GameObject selectedObject;
+	//colors for change text
+	Color green;
+	Color red;
 
-	void Awake (){
-		//infoPanel = this.gameObject;
-
-		//infoPanelWidth = infoPanel.GetComponent<RectTransform> ().sizeDelta.x;
-
+	void Awake(){
 		infoHeaderText = GameObject.Find ("InfoHeader").GetComponentsInChildren<Text> ();
 		infoHeaderImg = GameObject.Find ("InfoHeader").GetComponentsInChildren<Image> ();
+		infoResourceText = GameObject.Find ("Resources").GetComponentsInChildren<Text> ();
+
+		green = new Color (0, 0.5f, 0);
+		red = new Color (0.7f, 0, 0);
 	}
 
-	public void UpdateFloatingInfo(){
-		currentRes = selectedObject.GetComponent<CurrentResources> ();
-
-		for (int i = 0; i < infoHeaderText.Length; i++) {
-			print ("infoHeaderText[" + i + "] = " + infoHeaderText[i]);
-		}
-
-		for (int j = 0; j < infoHeaderImg.Length; j++) {
-			print ("infoHeaderImg[" + j + "] = " + infoHeaderImg[j]);
-		}
-
-
-		infoHeaderText[0].text = currentRes.planet.typeName;
-
-		updateFlavorGUI ();
+	void Start(){
+		
 	}
 
-	void GetFlavorImages(){
-		//get flavor images
-		earthlikeFlavor = Resources.Load<Sprite> ("FlavorSprites/planetearth");
-		desertFlavor = Resources.Load<Sprite> ("FlavorSprites/planetdesert");
-		barrenFlavor = Resources.Load<Sprite> ("FlavorSprites/planetbarren");
-		shipFlavor = Resources.Load<Sprite> ("FlavorSprites/shipflavor");
+	void Update(){
+		//display detailed info on single selected object
+		if (SelectionMaster.instance.selectedObjects.Count == 1) {
+			//if selectedObject is planet
+			if (SelectionMaster.instance.selectedObjects [0].GetComponent<Planet> ()) {
+				//get selected planet's Planet
+				selectedPlanet = SelectionMaster.instance.selectedObjects [0].GetComponent<Planet> ();
 
-	}
+				//change text
+				infoHeaderText [0].text = selectedPlanet.planetName;
+				infoHeaderText[1].text = selectedPlanet.typeName;
+				infoHeaderText[2].text = "0"; //@@ NOT WORKING YET
+				infoHeaderText[3].text = " / " + selectedPlanet.nBuildingSlots.ToString();
 
-	public void updateFlavorGUI(){
-		if (!earthlikeFlavor) {
-			GetFlavorImages ();
-		}
+				//change flavorsprite
+				infoHeaderImg [0].sprite = selectedPlanet.flavorSprite;
 
-		if (selectedObject.tag == "Planet") {
-			string objectName = selectedObject.GetComponent<Planet> ().typeName;
-			//print (objectName);
-			if (objectName == "Earthlike") {
-				infoHeaderImg[2].sprite = earthlikeFlavor;
+				//update resource info
+				UpdateAmountInfo (selectedPlanet.currentRes.pop, 0);
+				UpdateChangeInfo (selectedPlanet.currentRes.pop, 1);
+
+				UpdateAmountInfo (selectedPlanet.currentRes.flora, 2);
+				UpdateChangeInfo (selectedPlanet.currentRes.flora, 3);
+
+				UpdateAmountInfo (selectedPlanet.currentRes.fauna, 4);
+				UpdateChangeInfo (selectedPlanet.currentRes.fauna, 5);
+
+				UpdateAmountInfo (selectedPlanet.currentRes.food, 6);
+				UpdateChangeInfo (selectedPlanet.currentRes.food, 7);
+
+				UpdateAmountInfo (selectedPlanet.currentRes.water, 8);
+				UpdateChangeInfo (selectedPlanet.currentRes.water, 9);
+
+				UpdateAmountInfo (selectedPlanet.currentRes.oxygen, 10);
+				UpdateChangeInfo (selectedPlanet.currentRes.oxygen, 11);
+
+				UpdateAmountInfo (selectedPlanet.currentRes.power, 12);
+				UpdateChangeInfo (selectedPlanet.currentRes.power, 13);
 			}
-			if (objectName == "Desert") {
-				infoHeaderImg[2].sprite = desertFlavor;
-			}
-			if (objectName == "Barren") {
-				infoHeaderImg[2].sprite = barrenFlavor;
-			}
+		}
 
-		} 
-		if (selectedObject.tag == "Ship") {
-			infoHeaderImg [1].sprite = shipFlavor;
+		//display less detailed info on multiple objects
+		if (SelectionMaster.instance.selectedObjects.Count > 1) {
+
 		}
 	}
 
+	void UpdateAmountInfo(Resource res, int n){
+		infoResourceText[n].text = res.amount.ToString ("0");
+	}
+
+	void UpdateChangeInfo(Resource res, int n){
+		if (res.change > 0){
+			infoResourceText[n].color = green;
+			infoResourceText[n].text = "+" + res.change.ToString("0");
+		}
+		if (res.change < 0){
+			infoResourceText[n].color = red;
+			infoResourceText[n].text = res.change.ToString("0");
+		}
+	}
 }
 
 
@@ -219,6 +238,5 @@ public class InfoWindow : MonoBehaviour {
 			infoPanelText[n].text = res.change.ToString("0");
 		}
 	}
-
 	*/
 

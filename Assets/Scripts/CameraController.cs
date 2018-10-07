@@ -43,8 +43,12 @@ public class CameraController : MonoBehaviour {
 
 		//for focus, just checked: is constant despite Camera.main.orthographicSize
 		//infoPanelWidth = GameObject.Find("InfoWindow").GetComponent<RectTransform>().sizeDelta.x;
-		infoPanelWidth = GameObject.Find("InfoWindow").GetComponent<RectTransform>().rect.width;
-		InfoPanelHeight = GameObject.Find("EmpireOverview").GetComponent<RectTransform>().rect.height;
+		if (GameObject.Find ("InfoWindow")) {
+			infoPanelWidth = GameObject.Find ("InfoWindow").GetComponent<RectTransform> ().rect.width;
+		}
+		if (GameObject.Find ("EmpireOverview")) {
+			InfoPanelHeight = GameObject.Find ("EmpireOverview").GetComponent<RectTransform> ().rect.height;
+		}
 
 		/* not working properly but used to work..
 		//calculate offset based on empire UI and planet info UI
@@ -55,8 +59,8 @@ public class CameraController : MonoBehaviour {
 		print ("cameraCenter = " + cameraCenter + ", focusCenter = " + focusCenter + ", focusOffset = " + focusOffset);
 		*/
 
-		cameraCenter = new Vector2 (Screen.width / 2, Screen.height / 2);
-		focusCenter = new Vector2 ((Screen.width - infoPanelWidth) / 2, (Screen.height - InfoPanelHeight) / 2);
+		cameraCenter = Camera.main.ScreenToWorldPoint(new Vector2 (Screen.width / 2, Screen.height / 2));
+		focusCenter = Camera.main.ScreenToWorldPoint(new Vector2 ((Screen.width - infoPanelWidth) / 2, (Screen.height - InfoPanelHeight) / 2));
 		focusOffset = cameraCenter - focusCenter;
 		print ("screen width = " + Screen.width + ", height = " + Screen.height);
 		print ("cameraCenter = " + cameraCenter + ", focusCenter = " + focusCenter + ", focusOffset = " + focusOffset);
@@ -97,7 +101,8 @@ public class CameraController : MonoBehaviour {
 		bgTransform.Translate (b);
 
 		//probeersel cam focus op planet
-		if (isFocussed) {
+		//if (isFocussed && SelectionMaster.instance.selectedObjects.Count > 0) {
+		if (SelectionMaster.instance.selectedPlanets.Count > 0) {
 			Focus(SelectionMaster.instance.selectedPlanets[0].gameObject.GetComponent<Transform>());
 		}
 	}
@@ -137,14 +142,15 @@ public class CameraController : MonoBehaviour {
 	}
 
 	// most likely called from selectionmaster in case of a planet selected :P
+	//notes/bugs: 	needs to always center the camera with an offset, just havent figured out how to conver the static recttransform values of the focusoffset to actual camera position with much succes:P
+	//				background can move with wasd when focussed :-x
 	public void Focus (Transform target){
-		//set zoom level
-		Camera.main.orthographicSize = 2.5f;
-	
-		transform.position = new Vector3 (target.position.x + focusOffset.x, target.position.y - focusOffset.y, transform.position.z);
+		//temp
+		Camera.main.orthographicSize = 3;
 
-		//actually move the camera
-		//transform.Translate(new Vector3(target.position.x - transform.position.x + focusOffset.x, target.position.y - transform.position.y - focusOffset.y,0));
-		//transform.position = new Vector3(target.position.x + focusOffset.x, target.position.y - focusOffset.y, transform.position.z);
+		transform.position = new Vector3 (target.position.x + 1.4f, target.position.y - 0.8f, transform.position.z);
+		//transform.position = new Vector3 (target.position.x + focusOffset.x, target.position.y - focusOffset.y, transform.position.z);
+
+		//print ("transform = " + transform.position + ", target = " + target.position + ", transform-target = " + (transform.position - target.position) + ", focusOffset = " + focusOffset);
 	}
 }

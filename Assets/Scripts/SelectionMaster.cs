@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class SelectionMaster : MonoBehaviour {
 
@@ -20,20 +21,11 @@ public class SelectionMaster : MonoBehaviour {
 	Vector2 invertedStartPos;
 	Vector2 selectionEndPos;
 	bool isSelecting;
-	Texture2D selectionBoxTexture;
-	Rect selectionRect = new Rect(-10000,-10000,0,0);
-	//GameObject selectionBox;
-	Vector2 selectionStartPosWorld;
-	Vector2 selectionEndPosWorld;
-	Vector2 selectionStartPosForWorld;
-	float selectionWidth;
-	float selectionHeight;
-	Vector2 selectionCenter;
-	public SelectableType selectedType;
-	public SelectableType selectableType;
 	public bool isLeftClick = false;
 
-	//new box collider on selectionmaster itself
+	//selection box
+	Texture2D selectionBoxTexture;
+	Rect selectionRect = new Rect(-10000,-10000,0,0);
 	BoxCollider2D selectBox; 
 
 	//single selection timer
@@ -46,7 +38,12 @@ public class SelectionMaster : MonoBehaviour {
 	Ship selectableShip;
 	public bool isRightClick = false;
 
+	//camera
 	CameraController camController;
+
+	//ui
+	GameObject infoWindowGO;
+	InfoWindow infoWindow;
 
 	void Awake(){
 		//create selectionBox texture
@@ -64,6 +61,11 @@ public class SelectionMaster : MonoBehaviour {
 	//purely for testing camera focus
 	void Start(){
 		camController = Camera.main.GetComponent<CameraController> ();
+
+		//find, then turn off the infowindow
+		infoWindowGO = GameObject.Find ("InfoWindow");
+		infoWindow = infoWindowGO.GetComponent<InfoWindow> ();
+		infoWindowGO.SetActive (false);
 	}
 	
 	// Update is called once per frame
@@ -82,6 +84,7 @@ public class SelectionMaster : MonoBehaviour {
 		//start selecting stuff on left mousebuttonup
 		if (Input.GetMouseButtonUp(0)){
 			ClearSelections ();
+			infoWindowGO.SetActive (false);
 
 			isLeftClick = true;
 
@@ -178,13 +181,16 @@ public class SelectionMaster : MonoBehaviour {
 
 	//calculate size of the selection box based on mouse input
 	void SetSelectionBox(){
+		float selectionWidth;
+		float selectionHeight;
+
 		selectBox.enabled = true;
 		//print ("selectBox.enabled = " + selectBox.enabled);
 
 		//convert screen to world point, calculate box center
-		selectionStartPosWorld = Camera.main.ScreenToWorldPoint (selectionStartPos);
-		selectionEndPosWorld = Camera.main.ScreenToWorldPoint (selectionEndPos);
-		selectionCenter = new Vector2 ((selectionEndPosWorld.x + selectionStartPosWorld.x) / 2, (selectionEndPosWorld.y + selectionStartPosWorld.y) / 2);
+		Vector2 selectionStartPosWorld = Camera.main.ScreenToWorldPoint (selectionStartPos);
+		Vector2 selectionEndPosWorld = Camera.main.ScreenToWorldPoint (selectionEndPos);
+		Vector2 selectionCenter = new Vector2 ((selectionEndPosWorld.x + selectionStartPosWorld.x) / 2, (selectionEndPosWorld.y + selectionStartPosWorld.y) / 2);
 
 		//set box width and height, check for single click, else do "normal" group selection
 		if (isSingleClick){
@@ -208,7 +214,7 @@ public class SelectionMaster : MonoBehaviour {
 		selectedShips.Clear ();
 		selectedModules.Clear ();
 
-		print ("selected objects, planets, ships and modules cleared");
+		//print ("selected objects, planets, ships and modules cleared");
 	}
 
 	//filter selection to selectedObjects list based on number of selectedStuff in each subcategory (ship, planet, module)
@@ -222,14 +228,16 @@ public class SelectionMaster : MonoBehaviour {
 
 			if (selectedObjects.Count == 1) {
 				//crude?
-				camController.isFocussed = true;
+				//camController.isFocussed = true;
 				camController.Focus (selectedObjects[0].GetComponent<Transform>());
+				infoWindowGO.SetActive (true);
+				infoWindow
 			}
 		}
 		else if (selectedModules.Count > 0){
 			selectedObjects = selectedModules;
 		}
-		print ("selectedObjects = " + selectedObjects + ", .count = " + selectedObjects.Count);
+		//print ("selectedObjects = " + selectedObjects + ", .count = " + selectedObjects.Count);
 	}
 
 	/*

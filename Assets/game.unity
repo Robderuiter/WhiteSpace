@@ -1155,7 +1155,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f973015acde67ee40af2591263567b99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedObject: {fileID: 0}
 --- !u!1 &549534650
 GameObject:
   m_ObjectHideFlags: 0
@@ -1870,6 +1869,7 @@ RectTransform:
   - {fileID: 924217937}
   - {fileID: 751962281}
   - {fileID: 1964614449}
+  - {fileID: 1153422374}
   m_Father: {fileID: 495150903}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2204,7 +2204,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 5, y: -175}
-  m_SizeDelta: {x: 190, y: 28.6}
+  m_SizeDelta: {x: 168.16, y: 28.6}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &751962282
 MonoBehaviour:
@@ -2733,8 +2733,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c50a09993b0ed444a738f3fd4ad34d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedType: 0
-  selectableType: 0
+  selectedObjects: []
+  selectedShips: []
+  selectedPlanets: []
+  selectedModules: []
+  selectedWithRMB: []
   isLeftClick: 0
   isRightClick: 0
 --- !u!50 &833208213
@@ -3519,6 +3522,84 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a2308b8917cc7f04c8500713db2714e1, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1153422373
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 1765854777755896, guid: e6366a0adf65fb949b9b920a7134cf10,
+    type: 2}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1153422374}
+  - component: {fileID: 1153422376}
+  - component: {fileID: 1153422375}
+  m_Layer: 0
+  m_Name: MaxSlots
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1153422374
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 224871395562915828, guid: e6366a0adf65fb949b9b920a7134cf10,
+    type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1153422373}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 100}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 619735234}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -19.22, y: -101.8}
+  m_SizeDelta: {x: 38.45, y: -155.6}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1153422375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 114210097189660372, guid: e6366a0adf65fb949b9b920a7134cf10,
+    type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1153422373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 16
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 40
+    m_Alignment: 3
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 0
+--- !u!222 &1153422376
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 222030235728600830, guid: e6366a0adf65fb949b9b920a7134cf10,
+    type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1153422373}
 --- !u!1 &1161884241
 GameObject:
   m_ObjectHideFlags: 0
@@ -4631,7 +4712,7 @@ GameObject:
   - component: {fileID: 1563495948}
   m_Layer: 0
   m_Name: TimePanel
-  m_TagString: Untagged
+  m_TagString: UIpanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6044,7 +6125,7 @@ GameObject:
   - component: {fileID: 1964614451}
   - component: {fileID: 1964614450}
   m_Layer: 0
-  m_Name: Slots
+  m_Name: ActiveSlots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6066,8 +6147,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -28.220032, y: -87.32072}
-  m_SizeDelta: {x: 56.44, y: -175.4}
+  m_AnchoredPosition: {x: -58.36505, y: -101.80002}
+  m_SizeDelta: {x: 39.84, y: -155.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1964614450
 MonoBehaviour:
@@ -6096,13 +6177,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 40
-    m_Alignment: 4
+    m_Alignment: 5
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Slots
+  m_Text: 0
 --- !u!222 &1964614451
 CanvasRenderer:
   m_ObjectHideFlags: 0

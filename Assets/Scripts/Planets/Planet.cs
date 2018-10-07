@@ -10,6 +10,7 @@ public class Planet : MonoBehaviour {
 	public int planetType = 0;
 	public string typeName = "Planet";
 	public Sprite sprite;
+	public Sprite flavorSprite;
 	public float planetSize;
 	public bool isScanned = false;
 	public string[] planetNames;
