@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour {
 
 	//zoom vars
-	public int cameraCurrentZoom = 20;
+	public int cameraStartZoom = 20;
 	public int cameraZoomMax = 100;
 	public int cameraZoomMin = 3;
 
@@ -32,11 +32,15 @@ public class CameraController : MonoBehaviour {
 
 	void Awake () {
 		camHeight = -10;
+		cameraZoomMax = 100;
+		cameraZoomMin = 3;
+
+		isFocussed = false;
 	}
 
 	// Use this for initialization
 	void Start () {
-		Camera.main.orthographicSize = cameraCurrentZoom;
+		Camera.main.orthographicSize = cameraStartZoom;
 
 		bgTransform = GameObject.Find ("BackgroundController").GetComponent<Transform> ();
 		bgSpeed = mainSpeed / 2;
@@ -70,57 +74,51 @@ public class CameraController : MonoBehaviour {
 	void Update () {
 		CameraZoom ();
 
-		Vector2 p = GetBaseInput();
-		if (Input.GetKey (KeyCode.LeftShift)){
-			totalRun += Time.deltaTime;
-			p  = p * totalRun * shiftAdd;
-			p.x = Mathf.Clamp(p.x, -maxShift, maxShift);
-			p.y = Mathf.Clamp(p.y, -maxShift, maxShift);
+		if (!isFocussed) {
+			Vector2 p = GetBaseInput ();
+			if (Input.GetKey (KeyCode.LeftShift)) {
+				totalRun += Time.deltaTime;
+				p = p * totalRun * shiftAdd;
+				p.x = Mathf.Clamp (p.x, -maxShift, maxShift);
+				p.y = Mathf.Clamp (p.y, -maxShift, maxShift);
 
-			//bgTransform
-			b = p;
+				//bgTransform
+				b = p;
 
-			//also reset isfocussed state, so you can move away from a planet after closer inspection!
-		}
-		else{
-			totalRun = Mathf.Clamp(totalRun * 0.5f, 1f, 1000f);
+				//also reset isfocussed state, so you can move away from a planet after closer inspection!
+			} else {
+				totalRun = Mathf.Clamp (totalRun * 0.5f, 1f, 1000f);
 
-			//bgTransform
-			b = p * bgSpeed;
+				//bgTransform
+				b = p * bgSpeed;
+
+				//camera
+				p = p * mainSpeed;
+			}
 
 			//camera
-			p = p * mainSpeed;
+			p = p * Time.deltaTime;
+			transform.Translate (p);
+
+			//bgcontroller
+			b = b * Time.deltaTime;
+			bgTransform.Translate (b);
 		}
-
-		//camera
-		p = p * Time.deltaTime;
-		transform.Translate (p);
-
-		//bgcontroller
-		b = b * Time.deltaTime;
-		bgTransform.Translate (b);
 
 		//probeersel cam focus op planet
-		//if (isFocussed && SelectionMaster.instance.selectedObjects.Count > 0) {
-		if (SelectionMaster.instance.selectedPlanets.Count > 0) {
-			Focus(SelectionMaster.instance.selectedPlanets[0].gameObject.GetComponent<Transform>());
+		if (isFocussed && SelectionMaster.instance.selectedPlanets.Count == 1){
+			Focus(SelectionMaster.instance.selectedObjects[0].gameObject.GetComponent<Transform>());
 		}
+
+		print ("count = " + SelectionMaster.instance.selectedPlanets.Count);
 	}
 
 	public void CameraZoom(){
-		if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
-			if (cameraCurrentZoom < cameraZoomMax) {
-				cameraCurrentZoom += 1;
-				Camera.main.orthographicSize = Mathf.Max (Camera.main.orthographicSize + 1);
-			}
-
+		if (Input.GetAxis ("Mouse ScrollWheel") < 0 && Camera.main.orthographicSize < cameraZoomMax) {
+			Camera.main.orthographicSize += 1;
 		}
-		if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
-			if (cameraCurrentZoom > cameraZoomMin) {
-				cameraCurrentZoom -= 1;
-				Camera.main.orthographicSize = Mathf.Min (Camera.main.orthographicSize - 1);
-			}
-
+		if (Input.GetAxis ("Mouse ScrollWheel") > 0 && Camera.main.orthographicSize > cameraZoomMin) {
+			Camera.main.orthographicSize -= 1;
 		}
 	}
 
@@ -141,16 +139,13 @@ public class CameraController : MonoBehaviour {
 		return p_Velocity;
 	}
 
-	// most likely called from selectionmaster in case of a planet selected :P
 	//notes/bugs: 	needs to always center the camera with an offset, just havent figured out how to conver the static recttransform values of the focusoffset to actual camera position with much succes:P
 	//				background can move with wasd when focussed :-x
 	public void Focus (Transform target){
-		//temp
-		Camera.main.orthographicSize = 3;
-
+		Camera.main.orthographicSize = cameraZoomMin;
+		//@@ isfocussed is turned on every cycle.. :-x
+		isFocussed = true;
 		transform.position = new Vector3 (target.position.x + 1.4f, target.position.y - 0.8f, transform.position.z);
-		//transform.position = new Vector3 (target.position.x + focusOffset.x, target.position.y - focusOffset.y, transform.position.z);
-
 		//print ("transform = " + transform.position + ", target = " + target.position + ", transform-target = " + (transform.position - target.position) + ", focusOffset = " + focusOffset);
 	}
 }

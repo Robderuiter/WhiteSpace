@@ -43,7 +43,7 @@ public class SelectionMaster : MonoBehaviour {
 
 	//ui
 	GameObject infoWindowGO;
-	InfoWindow infoWindow;
+	//InfoWindow infoWindow;
 
 	void Awake(){
 		//create selectionBox texture
@@ -64,7 +64,7 @@ public class SelectionMaster : MonoBehaviour {
 
 		//find, then turn off the infowindow
 		infoWindowGO = GameObject.Find ("InfoWindow");
-		infoWindow = infoWindowGO.GetComponent<InfoWindow> ();
+		//infoWindow = infoWindowGO.GetComponent<InfoWindow> ();
 		infoWindowGO.SetActive (false);
 	}
 	
@@ -85,6 +85,7 @@ public class SelectionMaster : MonoBehaviour {
 		if (Input.GetMouseButtonUp(0)){
 			ClearSelections ();
 			infoWindowGO.SetActive (false);
+			camController.isFocussed = false;
 
 			isLeftClick = true;
 
@@ -229,9 +230,10 @@ public class SelectionMaster : MonoBehaviour {
 			if (selectedObjects.Count == 1) {
 				//crude?
 				//camController.isFocussed = true;
-				camController.Focus (selectedObjects[0].GetComponent<Transform>());
+				//camController.Focus (selectedObjects[0].GetComponent<Transform>());
 				infoWindowGO.SetActive (true);
-				infoWindow
+				camController.isFocussed = true;
+
 			}
 		}
 		else if (selectedModules.Count > 0){
