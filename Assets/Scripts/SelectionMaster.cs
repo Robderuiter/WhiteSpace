@@ -21,7 +21,7 @@ public class SelectionMaster : MonoBehaviour {
 	Vector2 invertedStartPos;
 	Vector2 selectionEndPos;
 	bool isSelecting;
-	public bool isLeftClick = false;
+	public bool isLeftClick;
 
 	//selection box
 	Texture2D selectionBoxTexture;
@@ -36,7 +36,7 @@ public class SelectionMaster : MonoBehaviour {
 
 	//Commands / right mouse button
 	Ship selectableShip;
-	public bool isRightClick = false;
+	public bool isRightClick;
 
 	//camera
 	CameraController camController;
@@ -56,6 +56,11 @@ public class SelectionMaster : MonoBehaviour {
 
 		selectBox = gameObject.GetComponent<BoxCollider2D> ();
 		selectBox.enabled = false;
+
+		//
+		isRightClick = false;
+		isLeftClick = false;
+		isSingleClick = false;
 	}
 
 	//purely for testing camera focus
@@ -88,6 +93,7 @@ public class SelectionMaster : MonoBehaviour {
 			camController.isFocussed = false;
 
 			isLeftClick = true;
+			isRightClick = false;
 
 			//stop drawing gui box
 			isSelecting = false;
@@ -117,7 +123,52 @@ public class SelectionMaster : MonoBehaviour {
 			//turn off the selectionBox
 			selectBox.enabled = false;
 			isLeftClick = false;
-			//print ("selectBox.enabled = " + selectBox.enabled);
+			isRightClick = false;
+		}
+
+		if (Input.GetMouseButtonDown (1)) {
+			selectionStartPos = Input.mousePosition;
+			invertedStartPos = new Vector2(selectionStartPos.x, Screen.height - selectionStartPos.y);
+		}
+
+		//if right mouse button, do commands depending on current selection
+		if (Input.GetMouseButtonUp (1)) {
+			//selectedWithRMB.Clear ();
+
+			//used for moving ships
+			Vector2 RMBtarget = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+			//stuff for modules: selecting target to attach to with rmb
+			isLeftClick = false;
+			isRightClick = true;
+			isSingleClick = true;
+			selectionEndPos = Input.mousePosition;
+
+
+			SetSelectionBox ();
+
+			//if any ship is selected, move to location
+			if (selectedShips.Count > 0) {
+				//go through all selected objects
+				foreach (Collider2D col in selectedObjects) {
+					print (RMBtarget);
+					//actually move the ship
+					//col.gameObject.GetComponent<Ship>().RotateShip (RMBtarget);
+					//@@ doing 2 calls now, should just be 1..
+					col.gameObject.GetComponent<Ship> ().target = RMBtarget;
+					col.gameObject.GetComponent<Ship> ().hasToMove = true;
+
+					//Vector2.Lerp (col.gameObject.GetComponent<Transform> ().position, RMBtarget, 10f);
+				}
+			} //if module and when clicked on a planet/ship, attachmodule
+			else if (selectedModules.Count > 0 && selectedWithRMB.Count > 0) {
+				
+
+			} //if module or planet and NOT clicked on a planet/ship, clear selection
+			else if (selectedPlanets.Count > 0) {
+				//deselect on rmb anywhere
+				ClearSelections();
+			}
 		}
 
 
@@ -130,6 +181,7 @@ public class SelectionMaster : MonoBehaviour {
 			//needed for SelectionBoxCollider class
 			isLeftClick = false;
 			isRightClick = true;
+
 
 			//needed for SetSelectionBox()
 			isSingleClick = true;
@@ -151,32 +203,51 @@ public class SelectionMaster : MonoBehaviour {
 		//until mousebuttonup, draw box based on mousepos, uses inverted mousePos because gui and screen use different corners for (0,0), for some reason...
 		if (isSelecting && Time.time - timeMouseDown > singleClickTime) {
 			selectionEndPos = Input.mousePosition;
-			selectionRect.x = Mathf.Min(invertedStartPos.x,selectionEndPos.x) ;
-			selectionRect.y = Mathf.Min(invertedStartPos.y, Screen.height - selectionEndPos.y) ;
-			selectionRect.width = Mathf.Abs(invertedStartPos.x-selectionEndPos.x) ;
-			selectionRect.height = Mathf.Abs(Screen.height - invertedStartPos.y - selectionEndPos.y);
+			selectionRect.x = Mathf.Min (invertedStartPos.x, selectionEndPos.x);
+			selectionRect.y = Mathf.Min (invertedStartPos.y, Screen.height - selectionEndPos.y);
+			selectionRect.width = Mathf.Abs (invertedStartPos.x - selectionEndPos.x);
+			selectionRect.height = Mathf.Abs (Screen.height - invertedStartPos.y - selectionEndPos.y);
 
 			//instantiate prefab gameobject with collider + image
-			GUI.Box (selectionRect,selectionBoxTexture);
-		}
+			GUI.Box (selectionRect, selectionBoxTexture);
+		} 
 	}
 
 	//this is where the selection magic happens: in Update() we flick the colliders on/off, the moment it turns on, we add collided objects to seperate lists:
 	void OnTriggerEnter2D (Collider2D otherCol){
 		//print ("ontriggerenter otherCol.gameObject = " + otherCol.gameObject);
-		if (otherCol.gameObject.tag == "Ship") {
-			selectedShips.Add (otherCol);
-			//print ("selectedShips.count = " + selectedShips.Count + ", added " + otherCol.gameObject);
-		}
+		if (isLeftClick) {
+			if (otherCol.gameObject.tag == "Ship") {
+				selectedShips.Add (otherCol);
+				//print ("selectedShips.count = " + selectedShips.Count + ", added " + otherCol.gameObject);
+			}
 
-		if (otherCol.gameObject.tag == "Planet") {
-			selectedPlanets.Add (otherCol);
-			//print ("selectedPlanets.count = " + selectedPlanets.Count + ", added " + otherCol.gameObject);
-		}
+			if (otherCol.gameObject.tag == "Planet") {
+				selectedPlanets.Add (otherCol);
+				//print ("selectedPlanets.count = " + selectedPlanets.Count + ", added " + otherCol.gameObject);
+			}
 
-		if (otherCol.gameObject.tag == "Module"){
-			selectedModules.Add (otherCol);
-			//print ("selectedModules.count = " + selectedModules.Count + ", added " + otherCol.gameObject);
+			if (otherCol.gameObject.tag == "Module") {
+				selectedModules.Add (otherCol);
+				//print ("selectedModules.count = " + selectedModules.Count + ", added " + otherCol.gameObject);
+			}
+		} 
+
+		//if rightclick
+		if (isRightClick) {
+			//if module has been selected
+			if (selectedModules.Count > 0 && selectedShips.Count == 0 && selectedPlanets.Count == 0) {
+				//if clicked on another ship/planet, attach module
+				if (otherCol.gameObject.tag == "Ship" || otherCol.gameObject.tag == "Planet") {
+					selectedWithRMB.Add (otherCol);
+					isRightClick = false;
+					isSingleClick = false;
+					selectBox.enabled = false;
+
+					//@@ enable the following and it should work
+					otherCol.gameObject.GetComponent<Module> ().AttachModule ();
+				}
+			}
 		}
 	}
 
@@ -186,7 +257,6 @@ public class SelectionMaster : MonoBehaviour {
 		float selectionHeight;
 
 		selectBox.enabled = true;
-		//print ("selectBox.enabled = " + selectBox.enabled);
 
 		//convert screen to world point, calculate box center
 		Vector2 selectionStartPosWorld = Camera.main.ScreenToWorldPoint (selectionStartPos);
@@ -194,7 +264,7 @@ public class SelectionMaster : MonoBehaviour {
 		Vector2 selectionCenter = new Vector2 ((selectionEndPosWorld.x + selectionStartPosWorld.x) / 2, (selectionEndPosWorld.y + selectionStartPosWorld.y) / 2);
 
 		//set box width and height, check for single click, else do "normal" group selection
-		if (isSingleClick){
+		if (isSingleClick) {
 			selectionWidth = 1;
 			selectionHeight = 1;
 		} else {
@@ -206,14 +276,17 @@ public class SelectionMaster : MonoBehaviour {
 		//set center and size
 		selectBox.transform.position = selectionCenter;
 		selectBox.size = new Vector2 (Mathf.Abs(selectionWidth), Mathf.Abs(selectionHeight));
+
+		//print ("selectStartPos = " + selectionStartPos + ", selectionStartPosWorld = " + selectionStartPosWorld + ", selectbox transform.pos = " + selectBox.transform.position + ", size = " + selectBox.size + ", enabled = " + selectBox.enabled);
 	}
 		
-	//clear all the selection lists for LMB
+	//clear all the selection lists
 	void ClearSelections(){
 		selectedObjects.Clear ();
 		selectedPlanets.Clear ();
 		selectedShips.Clear ();
 		selectedModules.Clear ();
+		selectedWithRMB.Clear ();
 
 		//print ("selected objects, planets, ships and modules cleared");
 	}
@@ -224,39 +297,19 @@ public class SelectionMaster : MonoBehaviour {
 		if (selectedShips.Count > 0){
 			selectedObjects = selectedShips;
 		}
+		//otherwise prefer selecting ships
 		else if (selectedPlanets.Count > 0){
 			selectedObjects = selectedPlanets;
 
 			if (selectedObjects.Count == 1) {
-				//crude?
-				//camController.isFocussed = true;
-				//camController.Focus (selectedObjects[0].GetComponent<Transform>());
 				infoWindowGO.SetActive (true);
 				camController.isFocussed = true;
-
 			}
 		}
+		//if nothing else is in the selection, select modules
 		else if (selectedModules.Count > 0){
 			selectedObjects = selectedModules;
 		}
 		//print ("selectedObjects = " + selectedObjects + ", .count = " + selectedObjects.Count);
 	}
-
-	/*
-	//run the Select function on each selected object, creating a "selection box" and an infowindow
-	void SelectSelectedObjects(List<Selectable> selected){
-		selectedObjects = selected;
-		foreach (Selectable selectable in selectedObjects){
-			selectable.Select ();
-		}
-	}
-
-	//removes selection box and infowindow from each selected object
-	void DeselectSelectedObjects(){
-		foreach (Selectable selectable in selectedObjects) {
-			selectable.Deselect ();
-		}
-		selectedObjects.Clear ();
-	}
-	*/
 }

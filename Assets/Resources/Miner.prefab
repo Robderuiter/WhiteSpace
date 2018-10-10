@@ -107,10 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afd7c201592f8f34d864a85771f8b077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  homePlanet: {fileID: 0}
-  planet: {fileID: 0}
   hasLanded: 0
-  waterOnModule: 0
   nWaterExtracted: 0
   currentRes: {fileID: 0}
   targetRes: {fileID: 0}

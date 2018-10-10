@@ -4,33 +4,40 @@ using UnityEngine;
 
 public class Module : MonoBehaviour {
 
-	float size;
-	float spriteSize;
-	float sizeBuffer;
+
+	//float size;
+	//float spriteSize;
+	//float sizeBuffer;
+	/*
 	public Planet homePlanet;
 	public GameObject planet;
 	//Rigidbody2D rb;
+	public float waterOnModule;
+	*/
 	public bool hasLanded = false;
 	private bool extractsResources = true;
-	private bool extractsWater = false;
 	private bool extractsFood = false;
-	public float waterOnModule;
+	private bool extractsWater = false;
 	public float nWaterExtracted;
+
 
 	//resources
 	public CurrentResources currentRes;
-	public CurrentResources targetRes;
 	public float nExtracted;
 	public float storage;
 
 	//Empire overview
 	Empire empire;
 
+	public static float modSize;
+
 	public void Awake () {
-		size = GetComponent<CircleCollider2D>().radius;
-		spriteSize = GetComponent<SpriteRenderer>().size.x * transform.localScale.x;
-		sizeBuffer = size/5;
+		//size = GetComponent<CircleCollider2D>().radius;
+		//spriteSize = GetComponent<SpriteRenderer>().size.x * transform.localScale.x;
+		//sizeBuffer = size/5;
 		//rb = GetComponent<Rigidbody2D> ();
+
+		modSize = GetComponent<SpriteRenderer>().size.x * transform.localScale.x;
 	}
 
 	// Use this for initialization
@@ -39,6 +46,8 @@ public class Module : MonoBehaviour {
 		nWaterExtracted = 100000;
 
 		empire = GameObject.Find("Empire").GetComponent<Empire>();
+
+		//currentRes = new CurrentResources ();
 	}
 
 	// Update is called once per frame
@@ -54,6 +63,26 @@ public class Module : MonoBehaviour {
 		}
 	}
 
+	public void AddToChange(Resource res, float n){
+		//still need to add a currentResources to Module
+		res.change += n;
+		//print ("res.amount = " + res.amount + ", currentRes = " + currentRes);
+	}
+
+	public virtual void DoYourThang(){
+
+	}
+
+	//called from Selectionmaster
+	public void AttachModule (GameObject targetObject){
+		//set targetobject as parent
+		transform.parent = targetObject.transform;
+	}
+
+}
+
+/*
+	 	//is supposed to work for entire selection, don't need that crap! just attach a single module and run foreach selectedObjects (modules) from selectionmaster
 	public void AttachModule (GameObject target){
 		print (target);
 		if (target.tag == "Planet") {
@@ -61,6 +90,7 @@ public class Module : MonoBehaviour {
 			planet = target;
 			homePlanet = target.GetComponent<Planet>();
 			print ("homePlanet = " + homePlanet + ", homePlanet.isScanned = " + homePlanet.isScanned + ", homePlanet.nBuildingSlots = " + homePlanet.nBuildingSlots);
+
 
 			//check if targetplanet has been scanned
 			if (homePlanet.isScanned) {
@@ -133,15 +163,5 @@ public class Module : MonoBehaviour {
 			//print ("Succesfully attached to ship, hasLanded = " + hasLanded);
 		}
 	}
+	*/
 
-	public void AddToChange(Resource res, float n){
-		//still need to add a currentResources to Module
-		res.change += n;
-		//moduleRes += n;
-		print ("res.amount = " + res.amount + ", currentRes = " + currentRes);
-	}
-
-	public virtual void DoYourThang(){
-
-	}
-}

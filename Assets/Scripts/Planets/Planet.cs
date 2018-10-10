@@ -91,6 +91,10 @@ public class Planet : MonoBehaviour {
 	public float temperatureStorage;
 	public float goldStorage;
 
+	//module slots
+	public ModuleSlots slots;
+	float planetBuildablePercentage;
+
 	// runs during initialization, great for internal settings, not great for external links
 	public void Awake () {
 		//get the Module resource, used for size calculation later
@@ -102,8 +106,8 @@ public class Planet : MonoBehaviour {
 
 	public void Start(){
 		//calculate amount of building slots and then set new array of gameobjects with that length, needs to be at Start() to operate correctly
-		nBuildingSlots = CalcBuildingSlots (module);
-		buildingSlots = new GameObject[nBuildingSlots];
+		//nBuildingSlots = CalcBuildingSlots (module);
+		//buildingSlots = new GameObject[nBuildingSlots];
 
 		//get link to currentresources
 		currentRes = GetComponent<CurrentResources>();
@@ -123,6 +127,15 @@ public class Planet : MonoBehaviour {
 		//start every planet as scanned and its current resources as active for easy testing, creates lag spikes every ~5s
 		currentRes.isActive = true;
 		isScanned = true;
+
+		//add module slots, arg 1 = Ship, arg 2 = Planet
+		slots = new ModuleSlots (null, this);
+
+		planetSize = GetComponent<CircleCollider2D>().radius * transform.localScale.x;
+		planetCircumference = 2 * planetSize * Mathf.PI;
+		planetBuildablePercentage = 1f;
+
+		slots.CalcModuleSlots (planetCircumference, 1f);
 	}
 
 	//get current planet type, used in resource subclasses, might prove unnecessary later, depends on Planet Getcomponent calls and children structure	
@@ -203,6 +216,7 @@ public class Planet : MonoBehaviour {
 		}
 	}
 
+	/*
 	//calculate amount of building slots and return int
 	public int CalcBuildingSlots(GameObject mod){
 		//calculating building slots with module size and planet size
@@ -217,6 +231,7 @@ public class Planet : MonoBehaviour {
 		//print ("planetCircumference = " + planetCircumference + ", planetSize = " + planetSize +  ", localScale.x = " + transform.localScale.x + ", module = " + module + ", moduleSize = " + moduleSize + ", buildingOffset = " + buildingOffset + ", nBuildingSlots = " + bs);
 		return (bs);
 	}
+	*/
 
 	//choose random name from string[] planetNames
 	public string GetRandomName(){

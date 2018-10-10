@@ -23,7 +23,6 @@ GameObject:
   - component: {fileID: 114462853439559100}
   - component: {fileID: 50940867910380836}
   - component: {fileID: 61185917265252904}
-  - component: {fileID: 114294653921989168}
   - component: {fileID: 82806384443498234}
   - component: {fileID: 114888884423286616}
   m_Layer: 13
@@ -73,7 +72,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1600781245001194}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5484096, y: -0.86474943, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4203568038376316}
@@ -331,22 +330,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ef8dcc7b3b83a74c88322fe8a33cc6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114294653921989168
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1600781245001194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff89405237dd3384eb1b3a094ba71223, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selected: 0
-  selectedPlanet: {fileID: 0}
-  modIsSelected: 0
-  test: 0
-  selectionMaster: {fileID: 0}
 --- !u!114 &114462853439559100
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -358,10 +341,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7cdb7875c3e9d74caf4bff42ce4dad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {x: 0, y: 0}
+  doneRotating: 0
+  doneMoving: 0
+  hasToMove: 0
   nModuleSlots: 6
   modules: []
   modSpriteSize: 0
   modDistanceBuffer: 0
+  isInEmpire: 0
   currentRes: {fileID: 0}
 --- !u!114 &114888884423286616
 MonoBehaviour:

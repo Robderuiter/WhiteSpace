@@ -14,6 +14,9 @@ public class Miner : Module {
 
 	new void Start(){
 		base.Start();
+
+		//example on how to get iron storage to work
+		//currentRes.food = new Food (this);
 	}
 
 	// Update is called once per frame

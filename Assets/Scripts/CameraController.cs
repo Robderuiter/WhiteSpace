@@ -14,7 +14,6 @@ public class CameraController : MonoBehaviour {
 	float shiftAdd = 20; //multiplied by how long shift is held.  Basically running
 	float maxShift = 100; //Maximum speed when holdin gshift
 	private float totalRun= 1;
-	float camHeight;
 
 	//paralex scrolling background
 	Transform bgTransform;
@@ -24,14 +23,12 @@ public class CameraController : MonoBehaviour {
 	//focus variables
 	float infoPanelWidth;
 	float InfoPanelHeight;
-	//float cameraHeight;
 	Vector2 focusCenter;
 	Vector2 cameraCenter;
 	Vector2 focusOffset;
 	public bool isFocussed = false;
 
 	void Awake () {
-		camHeight = -10;
 		cameraZoomMax = 100;
 		cameraZoomMin = 3;
 
@@ -72,9 +69,11 @@ public class CameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		//cam zoom
 		CameraZoom ();
 
-		if (!isFocussed) {
+		//cam movement
+
 			Vector2 p = GetBaseInput ();
 			if (Input.GetKey (KeyCode.LeftShift)) {
 				totalRun += Time.deltaTime;
@@ -103,16 +102,17 @@ public class CameraController : MonoBehaviour {
 			//bgcontroller
 			b = b * Time.deltaTime;
 			bgTransform.Translate (b);
-		}
+
 
 		//probeersel cam focus op planet
 		if (isFocussed && SelectionMaster.instance.selectedPlanets.Count == 1){
 			Focus(SelectionMaster.instance.selectedObjects[0].gameObject.GetComponent<Transform>());
 		}
 
-		print ("count = " + SelectionMaster.instance.selectedPlanets.Count);
+		//print ("count = " + SelectionMaster.instance.selectedPlanets.Count);
 	}
 
+	//zoom camera, duh
 	public void CameraZoom(){
 		if (Input.GetAxis ("Mouse ScrollWheel") < 0 && Camera.main.orthographicSize < cameraZoomMax) {
 			Camera.main.orthographicSize += 1;
@@ -122,6 +122,7 @@ public class CameraController : MonoBehaviour {
 		}
 	}
 
+	//move cam up/down/left/right
 	private Vector2 GetBaseInput() {
 		Vector2 p_Velocity = new Vector2();
 		if (Input.GetKey (KeyCode.W)){
@@ -140,10 +141,9 @@ public class CameraController : MonoBehaviour {
 	}
 
 	//notes/bugs: 	needs to always center the camera with an offset, just havent figured out how to conver the static recttransform values of the focusoffset to actual camera position with much succes:P
-	//				background can move with wasd when focussed :-x
 	public void Focus (Transform target){
 		Camera.main.orthographicSize = cameraZoomMin;
-		//@@ isfocussed is turned on every cycle.. :-x
+		//@@ bool isfocussed, so that this function runs every cycle.. :-x
 		isFocussed = true;
 		transform.position = new Vector3 (target.position.x + 1.4f, target.position.y - 0.8f, transform.position.z);
 		//print ("transform = " + transform.position + ", target = " + target.position + ", transform-target = " + (transform.position - target.position) + ", focusOffset = " + focusOffset);

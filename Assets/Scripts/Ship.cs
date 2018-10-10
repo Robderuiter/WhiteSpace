@@ -12,6 +12,7 @@ public class Ship : MonoBehaviour {
 	float angleTreshold = 10f;
 	public bool doneRotating;
 	public bool doneMoving;
+	public bool hasToMove;
 	SpriteRenderer scanner;
 	CircleCollider2D scannerCol;
 
@@ -20,8 +21,8 @@ public class Ship : MonoBehaviour {
 	AudioSource engineAudio;
 
 	//module slots, should become a ModuleSlots Class component added to planet and ship gameobjects
-	public int nModuleSlots = 6;
-	public GameObject[] modules;
+	//public int nModuleSlots = 6;
+	//public GameObject[] modules;
 	GameObject modulePrefab;
 	public float modSpriteSize;
 	public float modDistanceBuffer;
@@ -32,6 +33,11 @@ public class Ship : MonoBehaviour {
 
 	//resources
 	public CurrentResources currentRes;
+
+	//module slots
+	public ModuleSlots slots;
+	float moduleSpineLength; //how much space there is for placing modules
+	float usableSpineLengthPercent;
 
 	// Use this for initialization
 	void Start () {
@@ -47,7 +53,7 @@ public class Ship : MonoBehaviour {
 		modSpriteSize = modulePrefab.GetComponent<SpriteRenderer> ().size.x * transform.localScale.x;
 		modDistanceBuffer = modSpriteSize / 4;
 		//print ("modSpriteSize = " + modSpriteSize + ", modDistanceBuffer = " + modDistanceBuffer);
-		modules = new GameObject[nModuleSlots];
+		//modules = new GameObject[nModuleSlots];
 
 		//get currentResources
 		currentRes = GetComponent<CurrentResources>();
@@ -57,6 +63,13 @@ public class Ship : MonoBehaviour {
 
 		//add ship to empire's ship list
 		empire.ships.Add(this);
+
+		//add module slots, arg 1 = Ship, arg 2 = Planet
+		slots = new ModuleSlots (this, null);
+		moduleSpineLength = 1f;
+		usableSpineLengthPercent = 1f;
+
+		slots.CalcModuleSlots (moduleSpineLength, usableSpineLengthPercent);
 	}
 
 	// Update is called once per frame
@@ -73,10 +86,13 @@ public class Ship : MonoBehaviour {
 			scannerCol.enabled = false;
 		}
 
+
 		//actually rotate and then move to target
-		RotateShip (target);
-		if (doneRotating == true) {
-			MoveShip (target);
+		if (hasToMove) {
+			RotateShip (target);
+			if (doneRotating == true) {
+				MoveShip (target);
+			}
 		}
 
 
@@ -90,6 +106,7 @@ public class Ship : MonoBehaviour {
 		*/
 	}
 
+	//ship rotation
 	public void RotateShip (Vector2 targetPos){
 		//calc vectortotarget, angle and then lerp to desired angle
 		Vector2 vectorToTarget = targetPos - (Vector2)transform.position;
@@ -105,6 +122,7 @@ public class Ship : MonoBehaviour {
 		}
 	}
 
+	//ship movement
 	public void MoveShip (Vector2 targetPos){
 		transform.position = Vector2.Lerp (transform.position, targetPos, flightSpeed * Time.deltaTime);
 		if (!engineAudio.isPlaying && Vector2.Distance(transform.position,targetPos) > 5) {
@@ -112,19 +130,11 @@ public class Ship : MonoBehaviour {
 		}
 	}
 
-	//deprecated, not gonna be using slot objects anymore, after thinking about it it never made any sense to have those :P
-	void CreateModuleSlots (GameObject prefab, int nSlots){
-		for (int y = 0; y < nSlots; y++) {
-			modules[y] = Instantiate (prefab,transform.position,transform.rotation);
-			modules[y].transform.parent = transform;
-			modules[y].transform.localPosition = new Vector2(- modSpriteSize - modDistanceBuffer - y * (modSpriteSize + modDistanceBuffer),0);
-		}
-	}
-
 	void OnCollisionEnter2D(Collision2D otherCol){
 		//print ("this = " + this + ", otherCol = " + otherCol.gameObject);
 	}
 
+	//default unity OnDestroy()
 	void OnDestroy(){
 		//empire.empireUIController.shipCount--;
 		empire.ships.Remove (this);
