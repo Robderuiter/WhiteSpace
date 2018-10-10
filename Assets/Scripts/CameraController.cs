@@ -64,7 +64,7 @@ public class CameraController : MonoBehaviour {
 		focusCenter = Camera.main.ScreenToWorldPoint(new Vector2 ((Screen.width - infoPanelWidth) / 2, (Screen.height - InfoPanelHeight) / 2));
 		focusOffset = cameraCenter - focusCenter;
 		print ("screen width = " + Screen.width + ", height = " + Screen.height);
-		print ("cameraCenter = " + cameraCenter + ", focusCenter = " + focusCenter + ", focusOffset = " + focusOffset);
+		//print ("cameraCenter = " + cameraCenter + ", focusCenter = " + focusCenter + ", focusOffset = " + focusOffset);
 	}
 	
 	// Update is called once per frame

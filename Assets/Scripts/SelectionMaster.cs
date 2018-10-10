@@ -10,6 +10,7 @@ public class SelectionMaster : MonoBehaviour {
 
 	public static SelectionMaster instance;
 
+	//lists here! get your lists here! lots o' lists!
 	public List<Collider2D> selectedObjects = new List<Collider2D>();
 	public List<Collider2D> selectedShips = new List<Collider2D>();
 	public List<Collider2D> selectedPlanets = new List<Collider2D>();
@@ -20,8 +21,8 @@ public class SelectionMaster : MonoBehaviour {
 	Vector2 selectionStartPos;
 	Vector2 invertedStartPos;
 	Vector2 selectionEndPos;
-	bool isSelecting;
-	public bool isLeftClick;
+	bool isSelecting; //used to draw the gui box
+	public bool isLeftClick; 
 
 	//selection box
 	Texture2D selectionBoxTexture;
@@ -45,6 +46,7 @@ public class SelectionMaster : MonoBehaviour {
 	GameObject infoWindowGO;
 	//InfoWindow infoWindow;
 
+	//called during creation, used for internal refs and settings
 	void Awake(){
 		//create selectionBox texture
 		selectionBoxTexture = new Texture2D(1,1);
@@ -63,13 +65,12 @@ public class SelectionMaster : MonoBehaviour {
 		isSingleClick = false;
 	}
 
-	//purely for testing camera focus
+	//called after every other instance has been created, used for external refs
 	void Start(){
 		camController = Camera.main.GetComponent<CameraController> ();
 
 		//find, then turn off the infowindow
 		infoWindowGO = GameObject.Find ("InfoWindow");
-		//infoWindow = infoWindowGO.GetComponent<InfoWindow> ();
 		infoWindowGO.SetActive (false);
 	}
 	
@@ -88,10 +89,12 @@ public class SelectionMaster : MonoBehaviour {
 
 		//start selecting stuff on left mousebuttonup
 		if (Input.GetMouseButtonUp(0)){
+			//general reset
 			ClearSelections ();
 			infoWindowGO.SetActive (false);
 			camController.isFocussed = false;
 
+			//decide which click it is
 			isLeftClick = true;
 			isRightClick = false;
 
@@ -112,6 +115,9 @@ public class SelectionMaster : MonoBehaviour {
 
 			//turn on, center and resize the selection boxcollider
 			SetSelectionBox();
+
+			//interesting: selectedobjects.count is still 0 here, takes too long to filter through selection :P
+			//print ("selectedObjects.count = " + selectedObjects.Count);
 		} 
 		//this is where you turn off the selectionbox, and so where postselectionfiltering should apply
 		else if(selectBox.isActiveAndEnabled && isLeftClick){
@@ -126,6 +132,8 @@ public class SelectionMaster : MonoBehaviour {
 			isRightClick = false;
 		}
 
+
+		//save position for RMB
 		if (Input.GetMouseButtonDown (1)) {
 			selectionStartPos = Input.mousePosition;
 			invertedStartPos = new Vector2(selectionStartPos.x, Screen.height - selectionStartPos.y);
@@ -133,7 +141,7 @@ public class SelectionMaster : MonoBehaviour {
 
 		//if right mouse button, do commands depending on current selection
 		if (Input.GetMouseButtonUp (1)) {
-			//selectedWithRMB.Clear ();
+			selectedWithRMB.Clear ();
 
 			//used for moving ships
 			Vector2 RMBtarget = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -144,14 +152,13 @@ public class SelectionMaster : MonoBehaviour {
 			isSingleClick = true;
 			selectionEndPos = Input.mousePosition;
 
-
 			SetSelectionBox ();
 
 			//if any ship is selected, move to location
 			if (selectedShips.Count > 0) {
 				//go through all selected objects
 				foreach (Collider2D col in selectedObjects) {
-					print (RMBtarget);
+					//print (RMBtarget);
 					//actually move the ship
 					//col.gameObject.GetComponent<Ship>().RotateShip (RMBtarget);
 					//@@ doing 2 calls now, should just be 1..
@@ -244,8 +251,11 @@ public class SelectionMaster : MonoBehaviour {
 					isSingleClick = false;
 					selectBox.enabled = false;
 
-					//@@ enable the following and it should work
-					otherCol.gameObject.GetComponent<Module> ().AttachModule ();
+					//print ("otherCol.gameObject = " + otherCol.gameObject);
+
+					foreach (Collider2D modCol in selectedModules) {
+						modCol.gameObject.GetComponent<Module> ().AttachModule (otherCol.gameObject);
+					}
 				}
 			}
 		}
@@ -255,8 +265,6 @@ public class SelectionMaster : MonoBehaviour {
 	void SetSelectionBox(){
 		float selectionWidth;
 		float selectionHeight;
-
-		selectBox.enabled = true;
 
 		//convert screen to world point, calculate box center
 		Vector2 selectionStartPosWorld = Camera.main.ScreenToWorldPoint (selectionStartPos);
@@ -277,6 +285,7 @@ public class SelectionMaster : MonoBehaviour {
 		selectBox.transform.position = selectionCenter;
 		selectBox.size = new Vector2 (Mathf.Abs(selectionWidth), Mathf.Abs(selectionHeight));
 
+		selectBox.enabled = true;
 		//print ("selectStartPos = " + selectionStartPos + ", selectionStartPosWorld = " + selectionStartPosWorld + ", selectbox transform.pos = " + selectBox.transform.position + ", size = " + selectBox.size + ", enabled = " + selectBox.enabled);
 	}
 		
@@ -310,6 +319,6 @@ public class SelectionMaster : MonoBehaviour {
 		else if (selectedModules.Count > 0){
 			selectedObjects = selectedModules;
 		}
-		//print ("selectedObjects = " + selectedObjects + ", .count = " + selectedObjects.Count);
+		print ("selectedObjects = " + selectedObjects + ", .count = " + selectedObjects.Count);
 	}
 }

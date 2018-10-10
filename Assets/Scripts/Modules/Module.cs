@@ -20,7 +20,6 @@ public class Module : MonoBehaviour {
 	private bool extractsWater = false;
 	public float nWaterExtracted;
 
-
 	//resources
 	public CurrentResources currentRes;
 	public float nExtracted;
@@ -29,7 +28,9 @@ public class Module : MonoBehaviour {
 	//Empire overview
 	Empire empire;
 
+	//stuff for module slots on ships and planets
 	public static float modSize;
+	bool wasPlaced;
 
 	public void Awake () {
 		//size = GetComponent<CircleCollider2D>().radius;
@@ -46,8 +47,6 @@ public class Module : MonoBehaviour {
 		nWaterExtracted = 100000;
 
 		empire = GameObject.Find("Empire").GetComponent<Empire>();
-
-		//currentRes = new CurrentResources ();
 	}
 
 	// Update is called once per frame
@@ -73,16 +72,41 @@ public class Module : MonoBehaviour {
 
 	}
 
-	//called from Selectionmaster
+	//called from Selectionmaster, for each selected module
 	public void AttachModule (GameObject targetObject){
 		//set targetobject as parent
 		transform.parent = targetObject.transform;
+		wasPlaced = false;
+
+		//if ship
+		if (targetObject.tag == "Ship") {
+			//get ref to the ships modslots
+			ModuleSlots modSlots = targetObject.GetComponent<Ship>().slots;
+
+			//for each selectedobject (= selectedModules at this point)
+			for (int n = 0;n < modSlots.nSlots;n++){
+				//check if the n'th addedmodules in the array is empty
+				print ("modSlots.addedModules[n] = " + modSlots.addedModules[n]);
+				if (modSlots.addedModules[n] == null && !wasPlaced){
+					//move to the right position
+					transform.localPosition = new Vector2 (0 - modSize * 1.2f * (n + 1), 0);
+
+					//save ref of this module on ship's ModuleSlots
+					modSlots.addedModules[n] = this;
+
+					print ("addedmods[n] = " + modSlots.addedModules[n]);
+
+					wasPlaced = true;
+				}
+			}
+		}
+
 	}
 
 }
 
-/*
-	 	//is supposed to work for entire selection, don't need that crap! just attach a single module and run foreach selectedObjects (modules) from selectionmaster
+	/*
+	//is supposed to work for entire selection, don't need that crap! just attach a single module and run foreach selectedObjects (modules) from selectionmaster
 	public void AttachModule (GameObject target){
 		print (target);
 		if (target.tag == "Planet") {

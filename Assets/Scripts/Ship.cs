@@ -66,7 +66,7 @@ public class Ship : MonoBehaviour {
 
 		//add module slots, arg 1 = Ship, arg 2 = Planet
 		slots = new ModuleSlots (this, null);
-		moduleSpineLength = 1f;
+		moduleSpineLength = 10f;
 		usableSpineLengthPercent = 1f;
 
 		slots.CalcModuleSlots (moduleSpineLength, usableSpineLengthPercent);
