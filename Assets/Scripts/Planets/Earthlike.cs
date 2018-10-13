@@ -76,7 +76,7 @@ public class Earthlike : Planet {
 
 		planetNames = new string[6]{ "Earth", "Gaia", "Primus", "Atlas", "Dirt", "Calradia" };
 		//this (apparently?) needs to run here because of saving the name string in Awake(), doesnt work when i put in in planet Start, weird..
-		planetName = GetRandomName ();
+		defName = GetRandomName ();
 	}
 
 	// Use this for initialization

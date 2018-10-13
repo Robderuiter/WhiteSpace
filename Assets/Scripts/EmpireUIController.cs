@@ -7,7 +7,6 @@ public class EmpireUIController : MonoBehaviour {
 
 	Empire empire;
 	int nPanels = 3;
-	//GameObject empireOverviewPanel;
 	GameObject empirePlanetsPanel;
 	GameObject empireShipsPanel;
 	GameObject empireResourcesPanel;
@@ -17,31 +16,30 @@ public class EmpireUIController : MonoBehaviour {
 	//rectTransforms for gameobject placement on ui
 	RectTransform empirePlanetsRect;
 	RectTransform empireShipsRect;
-	//RectTransform empireResourcesRect;
 
 	GameObject shipImgPrefab;
 	GameObject planetImgPrefab;
 	GameObject planetIcon;
 	GameObject shipIcon;
-	Sprite planetIconSprite;
 	float imgWidth;
 
 	float textHeight;
 	float imgBuffer = 5;
+	float neededIconSize;
+
+	public int n;
+
+	//lists of icons
+	public List<GameObject> planetIcons = new List<GameObject>();
+	public List<GameObject> shipIcons = new List<GameObject>();
+
 
 	void Awake(){
 		//load resources (jaja)
 		shipImgPrefab = Resources.Load<GameObject> ("ShipImg");
 		planetImgPrefab = Resources.Load<GameObject> ("PlanetImg");
 
-		//find empire gameobject and get ref to Empire component
-		empire = GetComponent<Empire>();
-		//print ("empire = " + empire);
-	}
-
-	void Start(){
 		//get ref to panels
-		//empireOverviewPanel = GameObject.Find("EmpireOverview");
 		empirePlanetsPanel = GameObject.Find ("EmpirePlanets");
 		empireShipsPanel = GameObject.Find ("EmpireShips");
 		empireResourcesPanel = GameObject.Find ("EmpireResources");
@@ -49,7 +47,9 @@ public class EmpireUIController : MonoBehaviour {
 		//get all rectTransforms
 		empirePlanetsRect = empirePlanetsPanel.GetComponent<RectTransform>();
 		empireShipsRect = empireShipsPanel.GetComponent<RectTransform> ();
-		//empireResourcesRect = empireResourcesPanel.GetComponent<RectTransform>();
+
+		//get width to use for icon size
+		neededIconSize = empirePlanetsRect.rect.height / 3;
 
 		//set sizes of all empire subpanels, //@@ @max i know i know, runs 3 times outside of a loop, boohoo! :P
 		timesRan = 0;
@@ -60,14 +60,8 @@ public class EmpireUIController : MonoBehaviour {
 
 		//get the height of a title, used for placing spawned ui image gameobjects
 		textHeight = empirePlanetsPanel.GetComponentInChildren<Text>().rectTransform.rect.height;
-
-		//get width of used image
-		imgWidth = shipImgPrefab.GetComponent<Image>().rectTransform.rect.width;
-
-		UpdateEmpirePlanetUI ();
-		UpdateEmpireShipUI ();
 	}
-		
+
 	//run once to adjust ui panel sizes to screen size
 	void PositionEmpireUI(GameObject panel){
 		RectTransform rectT = panel.GetComponent<RectTransform>();
@@ -76,45 +70,65 @@ public class EmpireUIController : MonoBehaviour {
 		timesRan++;
 	}
 
-	//call this whenever something changes for empire wide planets/ships/resources, moet meer samengevoegd worden naar enkele functies maar voor nu superfijn om ze apart uit te schrijven (ivm unieke sprites/sizes/positions)
-	public void UpdateEmpireUI(){
-		// werkt nog niet goed
-		UpdateEmpirePlanetUI();
-		UpdateEmpireShipUI();
+
+	//newer work as of 12-10-2018
+	//called from empire when adding a new planet to its planets list
+	public void AddToPlanetUI(Planet planet){
+		//create icon
+		GameObject planetIcon = Instantiate (planetImgPrefab, empirePlanetsPanel.transform.position, transform.rotation);
+
+		//set right sprite
+		Sprite planetIconSprite = Resources.Load<Sprite> ("PlanetTypes/" + planet.typeName);
+		planetIcon.GetComponent<Image> ().sprite = planetIconSprite;
+
+		//set size
+		planetIcon.GetComponent<RectTransform> ().sizeDelta = new Vector2 (neededIconSize, neededIconSize);
+
+		//set parent and name
+		planetIcon.transform.SetParent (empirePlanetsPanel.transform);
+		planetIcon.name = planet.defName;
+
+		planetIcon.transform.localPosition = new Vector2 (neededIconSize * Empire.instance.planets.Count * 1.2f, empirePlanetsRect.rect.height - textHeight * 2 - imgBuffer);
+		planetIcon.transform.localRotation = new Quaternion (0,0,0,0);
+
+		planetIcons.Add (planetIcon);
 	}
 
-	//public because certain events need to call for just a planet empireUI update
-	public void UpdateEmpirePlanetUI(){
-		foreach (Planet planet in empire.planets) {
-			if (planet.isInEmpire == false) {
-				planetIcon = Instantiate (planetImgPrefab, empirePlanetsPanel.transform.position, transform.rotation);
-				float neededImgSize = empirePlanetsRect.rect.height / 3;
-				planetIcon.GetComponent<RectTransform> ().sizeDelta = new Vector2 (neededImgSize, neededImgSize);
-				//planetIcon.GetComponent<Image> ().sprite = null;
-				planetIconSprite = Resources.Load<Sprite> ("PlanetTypes/" + planet.typeName);
-				planetIcon.GetComponent<Image> ().sprite = planetIconSprite;
-				planetIcon.transform.SetParent (empirePlanetsPanel.transform);
-				planetIcon.transform.localPosition = new Vector2 ((neededImgSize + imgBuffer) * empire.planets.Count, empirePlanetsRect.rect.height - textHeight * 2 - imgBuffer);
-				planet.isInEmpire = true;
+	//called from empire when removing a new planet to its planets list
+	public void RemoveFromPlanetUI(Planet planet){
+		foreach (GameObject planetIcon in planetIcons) {
+			if (planet.defName == planetIcon.name) {
+				planetIcons.Remove (planetIcon);
+				Destroy (planetIcon);
+
+				break;
 			}
 		}
 	}
 
-	//public because certain events need to call for just a ship empireUI update
-	public void UpdateEmpireShipUI(){
-		foreach (Ship ship in empire.ships) {
-			if (ship.isInEmpire == false) {
-				shipIcon = Instantiate (shipImgPrefab, empirePlanetsPanel.transform.position, empirePlanetsPanel.transform.rotation);
-				shipIcon.transform.SetParent (empireShipsPanel.transform);
-				shipIcon.transform.localPosition = new Vector2 ((imgWidth + imgBuffer) * empire.ships.Count, empireShipsRect.rect.height - textHeight * 2);
-				shipIcon.transform.localRotation = new Quaternion (0,0,0,0);
-				ship.isInEmpire = true;
+	public void AddToShipUI(Ship ship){
+		GameObject shipIcon = Instantiate (shipImgPrefab, empireShipsPanel.transform.position, transform.rotation);
+
+		shipIcon.transform.SetParent(empireShipsPanel.transform);
+
+		shipIcon.transform.localPosition = new Vector2 (neededIconSize * Empire.instance.ships.Count * 1.2f, empireShipsRect.rect.height - textHeight * 2.2f);
+
+		ship.name = "Ship " + n;
+		shipIcon.name = "Ship " + n;
+		n++;
+
+		//add shipIcon to shipiconlist
+		shipIcons.Add (shipIcon);
+	}
+
+	public void RemoveFromShipUI(Ship ship){
+		foreach (GameObject shipIcon in shipIcons) {
+			if (ship.name == shipIcon.name) {
+				shipIcons.Remove (shipIcon);
+				Destroy (shipIcon);
+
+				break;
 			}
 		}
 	}
-
-	public void UpdateEmpireResourceUI(){
-
-	}
-
 }

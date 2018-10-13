@@ -62,7 +62,7 @@ public class Barren : Planet {
 
 		planetNames = new string[9]{"Little Eye", "Woon", "Badar", "Aku", "Yareach", "Ramachandra", "Chan", "Iah", "Arche"};
 		//this (apparently?) needs to run here because of saving the name string in Awake(), doesnt work when i put in in planet Start, weird..
-		planetName = GetRandomName ();
+		defName = GetRandomName ();
 	}
 
 	// Use this for initialization

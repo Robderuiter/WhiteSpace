@@ -8,7 +8,6 @@ public class InfoWindow : MonoBehaviour {
 	//this gameobject will be switched on/off in selectionmaster and get fed the target object to display, since there's only one infowindow and it only has to work when something is selected, it should be ok to use update 
 	//notes: gotta do some size checking, probably on awake: use sizes depending on screen size/other element's sizes
 
-	Planet selectedPlanet;
 
 	//UI element containers
 	Text[] infoHeaderText;
@@ -44,39 +43,54 @@ public class InfoWindow : MonoBehaviour {
 			//if selectedObject is planet
 			if (SelectionMaster.instance.selectedObjects [0].GetComponent<Planet> ()) {
 				//get selected planet's Planet
-				selectedPlanet = SelectionMaster.instance.selectedObjects [0].GetComponent<Planet> ();
+				Planet selectedPlanet = SelectionMaster.instance.selectedObjects [0].GetComponent<Planet> ();
 
 				//change text
-				infoHeaderText [0].text = selectedPlanet.planetName;
+				infoHeaderText [0].text = selectedPlanet.defName;
 				infoHeaderText[1].text = selectedPlanet.typeName;
-				infoHeaderText[2].text = "0"; //@@ NOT WORKING YET
+				infoHeaderText [2].text = selectedPlanet.nModulesAttached.ToString();
 				infoHeaderText[3].text = " / " + selectedPlanet.nBuildingSlots.ToString();
 
 				//change flavorsprite
 				infoHeaderImg [0].sprite = selectedPlanet.flavorSprite;
 
 				//update resource info
-				UpdateAmountInfo (selectedPlanet.currentRes.pop, 0);
-				UpdateChangeInfo (selectedPlanet.currentRes.pop, 1);
-
-				UpdateAmountInfo (selectedPlanet.currentRes.flora, 2);
-				UpdateChangeInfo (selectedPlanet.currentRes.flora, 3);
-
-				UpdateAmountInfo (selectedPlanet.currentRes.fauna, 4);
-				UpdateChangeInfo (selectedPlanet.currentRes.fauna, 5);
-
-				UpdateAmountInfo (selectedPlanet.currentRes.food, 6);
-				UpdateChangeInfo (selectedPlanet.currentRes.food, 7);
-
-				UpdateAmountInfo (selectedPlanet.currentRes.water, 8);
-				UpdateChangeInfo (selectedPlanet.currentRes.water, 9);
-
-				UpdateAmountInfo (selectedPlanet.currentRes.oxygen, 10);
-				UpdateChangeInfo (selectedPlanet.currentRes.oxygen, 11);
-
-				UpdateAmountInfo (selectedPlanet.currentRes.power, 12);
-				UpdateChangeInfo (selectedPlanet.currentRes.power, 13);
+				UpdateResourceInfo(selectedPlanet.currentRes);
 			}
+			if (SelectionMaster.instance.selectedObjects [0].GetComponent<Ship> ()) {
+				//get selected planet's Planet
+				Ship selectedShip = SelectionMaster.instance.selectedObjects [0].GetComponent<Ship> ();
+
+				//change text
+				infoHeaderText[0].text = selectedShip.defName;
+				infoHeaderText[1].text = selectedShip.type;
+				infoHeaderText[2].text = selectedShip.nModulesAttached.ToString(); 
+				infoHeaderText[3].text = " / " + selectedShip.modSlots.nSlots.ToString();
+
+				//change flavorsprite
+				infoHeaderImg [0].sprite = selectedShip.flavorSprite;
+
+				//update resource info
+				UpdateResourceInfo(selectedShip.currentRes);
+			}
+
+			if (SelectionMaster.instance.selectedObjects [0].GetComponent<Module> ()) {
+				//get selected planet's Planet
+				Module selectedModule = SelectionMaster.instance.selectedObjects [0].GetComponent<Module> ();
+
+				//change text
+				infoHeaderText[0].text = selectedModule.defName;
+				infoHeaderText[1].text = selectedModule.type;
+				infoHeaderText[2].text = " "; 
+				infoHeaderText[3].text = " ";
+
+				//change flavorsprite
+				infoHeaderImg [0].sprite = selectedModule.flavorSprite;
+
+				//update resource info
+				//UpdateResourceInfo(selectedModule.currentRes);
+			}
+
 		}
 
 		//display less detailed info on multiple objects
@@ -98,5 +112,28 @@ public class InfoWindow : MonoBehaviour {
 			infoResourceText[n].color = red;
 			infoResourceText[n].text = res.change.ToString("0");
 		}
+	}
+
+	void UpdateResourceInfo(CurrentResources currentRes){
+		UpdateAmountInfo (currentRes.pop, 0);
+		UpdateChangeInfo (currentRes.pop, 1);
+
+		UpdateAmountInfo (currentRes.flora, 2);
+		UpdateChangeInfo (currentRes.flora, 3);
+
+		UpdateAmountInfo (currentRes.fauna, 4);
+		UpdateChangeInfo (currentRes.fauna, 5);
+
+		UpdateAmountInfo (currentRes.food, 6);
+		UpdateChangeInfo (currentRes.food, 7);
+
+		UpdateAmountInfo (currentRes.water, 8);
+		UpdateChangeInfo (currentRes.water, 9);
+
+		UpdateAmountInfo (currentRes.oxygen, 10);
+		UpdateChangeInfo (currentRes.oxygen, 11);
+
+		UpdateAmountInfo (currentRes.power, 12);
+		UpdateChangeInfo (currentRes.power, 13);
 	}
 }

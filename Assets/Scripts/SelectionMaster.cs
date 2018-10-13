@@ -229,21 +229,21 @@ public class SelectionMaster : MonoBehaviour {
 				//print ("selectedShips.count = " + selectedShips.Count + ", added " + otherCol.gameObject);
 			}
 
-			if (otherCol.gameObject.tag == "Planet") {
-				selectedPlanets.Add (otherCol);
-				//print ("selectedPlanets.count = " + selectedPlanets.Count + ", added " + otherCol.gameObject);
-			}
-
 			if (otherCol.gameObject.tag == "Module") {
 				selectedModules.Add (otherCol);
 				//print ("selectedModules.count = " + selectedModules.Count + ", added " + otherCol.gameObject);
+			}
+
+			if (otherCol.gameObject.tag == "Planet") {
+				selectedPlanets.Add (otherCol);
+				//print ("selectedPlanets.count = " + selectedPlanets.Count + ", added " + otherCol.gameObject);
 			}
 		} 
 
 		//if rightclick
 		if (isRightClick) {
 			//if module has been selected
-			if (selectedModules.Count > 0 && selectedShips.Count == 0 && selectedPlanets.Count == 0) {
+			if (selectedModules.Count > 0 && selectedShips.Count == 0) {
 				//if clicked on another ship/planet, attach module
 				if (otherCol.gameObject.tag == "Ship" || otherCol.gameObject.tag == "Planet") {
 					selectedWithRMB.Add (otherCol);
@@ -251,11 +251,20 @@ public class SelectionMaster : MonoBehaviour {
 					isSingleClick = false;
 					selectBox.enabled = false;
 
-					//print ("otherCol.gameObject = " + otherCol.gameObject);
-
 					foreach (Collider2D modCol in selectedModules) {
-						modCol.gameObject.GetComponent<Module> ().AttachModule (otherCol.gameObject);
+						//get mod ref
+						Module mod = modCol.gameObject.GetComponent<Module> ();
+
+						//check if mod was already placed, if so run detached()
+						if (mod.wasPlaced) {
+							mod.DetachModule ();
+						}
+
+						//attach module to targetobject
+						mod.AttachModule (otherCol.gameObject);
 					}
+
+					ClearSelections ();
 				}
 			}
 		}
@@ -273,8 +282,8 @@ public class SelectionMaster : MonoBehaviour {
 
 		//set box width and height, check for single click, else do "normal" group selection
 		if (isSingleClick) {
-			selectionWidth = 1;
-			selectionHeight = 1;
+			selectionWidth = 0.01f;
+			selectionHeight = 0.01f;
 		} else {
 			selectionWidth = selectionEndPosWorld.x - selectionStartPosWorld.x;
 			selectionHeight = selectionEndPosWorld.y - selectionStartPosWorld.y;
@@ -305,8 +314,22 @@ public class SelectionMaster : MonoBehaviour {
 		//always prioritize selecting ships
 		if (selectedShips.Count > 0){
 			selectedObjects = selectedShips;
+
+			if (selectedObjects.Count == 1) {
+				infoWindowGO.SetActive (true);
+				camController.isFocussed = true;
+			}
 		}
-		//otherwise prefer selecting ships
+		//otherwise prefer selecting modules
+		else if (selectedModules.Count > 0){
+			selectedObjects = selectedModules;
+
+			if (selectedObjects.Count == 1) {
+				infoWindowGO.SetActive (true);
+				camController.isFocussed = true;
+			}
+		}
+		//if nothing else is in the selection, select planets
 		else if (selectedPlanets.Count > 0){
 			selectedObjects = selectedPlanets;
 
@@ -315,10 +338,7 @@ public class SelectionMaster : MonoBehaviour {
 				camController.isFocussed = true;
 			}
 		}
-		//if nothing else is in the selection, select modules
-		else if (selectedModules.Count > 0){
-			selectedObjects = selectedModules;
-		}
+
 		print ("selectedObjects = " + selectedObjects + ", .count = " + selectedObjects.Count);
 	}
 }

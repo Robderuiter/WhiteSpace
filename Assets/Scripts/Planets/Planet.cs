@@ -14,7 +14,7 @@ public class Planet : MonoBehaviour {
 	public float planetSize;
 	public bool isScanned = false;
 	public string[] planetNames;
-	public string planetName;
+	public string defName;
 	public bool isInEmpire = false;
 	public InfoWindow infoW;
 
@@ -26,7 +26,7 @@ public class Planet : MonoBehaviour {
 	//GameObject buildingPlaceholder;
 	float moduleSize;
 	float buildingOffset;
-	public int nModulesAttached = 0;
+	public int nModulesAttached;
 
 	//resource tresholds
 	public float[] resourceTresholds;
@@ -92,7 +92,7 @@ public class Planet : MonoBehaviour {
 	public float goldStorage;
 
 	//module slots
-	public ModuleSlots slots;
+	public ModuleSlots modSlots;
 	float planetBuildablePercentage;
 
 	// runs during initialization, great for internal settings, not great for external links
@@ -100,15 +100,13 @@ public class Planet : MonoBehaviour {
 		//get the Module resource, used for size calculation later
 		module = Resources.Load<GameObject>("Module");
 
+		nModulesAttached = 0;
+
 		//resource multipliers
 		//resourceMultipliers = new float[nResourceMultipliers];
 	}
 
 	public void Start(){
-		//calculate amount of building slots and then set new array of gameobjects with that length, needs to be at Start() to operate correctly
-		//nBuildingSlots = CalcBuildingSlots (module);
-		//buildingSlots = new GameObject[nBuildingSlots];
-
 		//get link to currentresources
 		currentRes = GetComponent<CurrentResources>();
 
@@ -129,13 +127,13 @@ public class Planet : MonoBehaviour {
 		isScanned = true;
 
 		//add module slots, arg 1 = Ship, arg 2 = Planet
-		slots = new ModuleSlots (null, this);
+		modSlots = new ModuleSlots (this.gameObject);
 
 		planetSize = GetComponent<CircleCollider2D>().radius * transform.localScale.x;
 		planetCircumference = 2 * planetSize * Mathf.PI;
 		planetBuildablePercentage = 1f;
 
-		slots.CalcModuleSlots (planetCircumference, 1f);
+		modSlots.CalcModuleSlots (planetCircumference, 1f);
 	}
 
 	//get current planet type, used in resource subclasses, might prove unnecessary later, depends on Planet Getcomponent calls and children structure	
@@ -206,57 +204,12 @@ public class Planet : MonoBehaviour {
 			//set the ticker on currentResources on
 			currentRes.isActive = true;
 
-			/*
-			//##
-			//update infowindow if scanned
-			if (GetComponent<Selectable>().infoW) {
-				GetComponent<Selectable> ().infoW.UpdateFloatingInfo();
-			}
-			*/
 		}
 	}
-
-	/*
-	//calculate amount of building slots and return int
-	public int CalcBuildingSlots(GameObject mod){
-		//calculating building slots with module size and planet size
-		planetSize = GetComponent<CircleCollider2D>().radius * transform.localScale.x;
-		//print ("planetSize in planet = " + planetSize);
-		planetCircumference = 2 * planetSize * Mathf.PI;
-
-		moduleSize = mod.GetComponent<CircleCollider2D>().radius * mod.transform.localScale.x;
-		buildingOffset = moduleSize / 2;
-
-		int bs = (int)(planetCircumference / (moduleSize + buildingOffset));
-		//print ("planetCircumference = " + planetCircumference + ", planetSize = " + planetSize +  ", localScale.x = " + transform.localScale.x + ", module = " + module + ", moduleSize = " + moduleSize + ", buildingOffset = " + buildingOffset + ", nBuildingSlots = " + bs);
-		return (bs);
-	}
-	*/
-
+		
 	//choose random name from string[] planetNames
 	public string GetRandomName(){
 		return planetNames [Random.Range (0, planetNames.Length)];
 	}
 
-	/*
-	public struct PlanetModifiers{
-		public string Name;
-		public float popMultiplier;
-		public float foodMultiplier;
-		public float waterMultiplier;
-		public float ironMultiplier;
-		public float oxygenMultiplier;
-		public float powerMultiplier;
-		public float stoneMultiplier;
-		public float researchMultiplier;
-		public float pollutionMultiplier;
-		public float floraMultiplier;
-		public float faunaMultiplier;
-		public float temperatureMultiplier;
-		public float goldMultiplier;
-		public float buildingSlotMultiplier;
-	}
-
-	public PlanetModifiers planet;
-	*/
 }

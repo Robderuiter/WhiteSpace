@@ -20,60 +20,56 @@ public class Ship : MonoBehaviour {
 	AudioSource scannerAudio;
 	AudioSource engineAudio;
 
-	//module slots, should become a ModuleSlots Class component added to planet and ship gameobjects
-	//public int nModuleSlots = 6;
-	//public GameObject[] modules;
-	GameObject modulePrefab;
-	public float modSpriteSize;
-	public float modDistanceBuffer;
-
 	//empire overview
-	Empire empire;
 	public bool isInEmpire = false;
 
 	//resources
 	public CurrentResources currentRes;
 
 	//module slots
-	public ModuleSlots slots;
+	public ModuleSlots modSlots;
 	float moduleSpineLength; //how much space there is for placing modules
 	float usableSpineLengthPercent;
+	public int nModulesAttached;
+
+	//infowindow stuff
+	public string defName;
+	public string type;
+	public Sprite flavorSprite;
+
+	void Awake(){
+		defName = "SS Hammer";
+		type = "Cargo Ship";
+		flavorSprite = Resources.Load<Sprite> ("FlavorSprites/shipflavor");
+	}
 
 	// Use this for initialization
 	void Start () {
-		scanner = GameObject.Find("Scanner").GetComponent<SpriteRenderer> ();
-		scannerCol = GameObject.Find("Scanner").GetComponent<CircleCollider2D> ();
+		//scanner = GameObject.Find("Scanner").GetComponent<SpriteRenderer> ();
+		//scannerCol = GameObject.Find("Scanner").GetComponent<CircleCollider2D> ();
 
 		//audio files
-		scannerAudio = GameObject.Find("Scanner").GetComponent<AudioSource> ();
+		//scannerAudio = GameObject.Find("Scanner").GetComponent<AudioSource> ();
 		engineAudio = GetComponent<AudioSource> ();
 
-		//module slots
-		modulePrefab = (GameObject)Resources.Load("Module Slot");
-		modSpriteSize = modulePrefab.GetComponent<SpriteRenderer> ().size.x * transform.localScale.x;
-		modDistanceBuffer = modSpriteSize / 4;
-		//print ("modSpriteSize = " + modSpriteSize + ", modDistanceBuffer = " + modDistanceBuffer);
-		//modules = new GameObject[nModuleSlots];
 
 		//get currentResources
 		currentRes = GetComponent<CurrentResources>();
 
-		//get empire ref
-		empire = GameObject.Find("Empire").GetComponent<Empire>();
-
-		//add ship to empire's ship list
-		empire.ships.Add(this);
-
 		//add module slots, arg 1 = Ship, arg 2 = Planet
-		slots = new ModuleSlots (this, null);
+		modSlots = new ModuleSlots (this.gameObject);
 		moduleSpineLength = 10f;
 		usableSpineLengthPercent = 1f;
 
-		slots.CalcModuleSlots (moduleSpineLength, usableSpineLengthPercent);
+		modSlots.CalcModuleSlots (moduleSpineLength, usableSpineLengthPercent);
+
+		//add ship to empire's ship list
+		Empire.instance.AddShip(this);
 	}
 
 	// Update is called once per frame
 	void Update () {
+		/*
 		//enable scanner sprite if space is pressed
 		if (Input.GetButton ("Space")) {
 			scanner.enabled = true;
@@ -85,8 +81,12 @@ public class Ship : MonoBehaviour {
 			scanner.enabled = false;
 			scannerCol.enabled = false;
 		}
+		*/
 
-
+		if (Input.GetButton ("Space")) {
+			Destroy (this.gameObject);
+		}
+			
 		//actually rotate and then move to target
 		if (hasToMove) {
 			RotateShip (target);
@@ -136,8 +136,6 @@ public class Ship : MonoBehaviour {
 
 	//default unity OnDestroy()
 	void OnDestroy(){
-		//empire.empireUIController.shipCount--;
-		empire.ships.Remove (this);
-		empire.empireUIController.UpdateEmpireUI ();
+		Empire.instance.RemoveShip (this);
 	}
 }

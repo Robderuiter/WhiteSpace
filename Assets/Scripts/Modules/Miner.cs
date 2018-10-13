@@ -10,6 +10,11 @@ public class Miner : Module {
 		base.Awake();
 
 		nExtracted = 100;
+
+		//infowindow stuff
+		defName = "Kelvinator";
+		type = "Miner";
+		flavorSprite = Resources.Load<Sprite> ("FlavorSprites/planetempty");
 	}
 
 	new void Start(){

@@ -30,14 +30,16 @@ public class Module : MonoBehaviour {
 
 	//stuff for module slots on ships and planets
 	public static float modSize;
-	bool wasPlaced;
+	public bool wasPlaced;
+	int wasPlacedAtSpot;
+	public GameObject myParent;
+
+	//infowindow stuff
+	public string defName;
+	public string type;
+	public Sprite flavorSprite;
 
 	public void Awake () {
-		//size = GetComponent<CircleCollider2D>().radius;
-		//spriteSize = GetComponent<SpriteRenderer>().size.x * transform.localScale.x;
-		//sizeBuffer = size/5;
-		//rb = GetComponent<Rigidbody2D> ();
-
 		modSize = GetComponent<SpriteRenderer>().size.x * transform.localScale.x;
 	}
 
@@ -74,118 +76,114 @@ public class Module : MonoBehaviour {
 
 	//called from Selectionmaster, for each selected module
 	public void AttachModule (GameObject targetObject){
-		//set targetobject as parent
-		transform.parent = targetObject.transform;
-		wasPlaced = false;
-
 		//if ship
 		if (targetObject.tag == "Ship") {
 			//get ref to the ships modslots
-			ModuleSlots modSlots = targetObject.GetComponent<Ship>().slots;
+			ModuleSlots slots = targetObject.GetComponent<Ship>().modSlots;
 
-			//for each selectedobject (= selectedModules at this point)
-			for (int n = 0;n < modSlots.nSlots;n++){
+			//for each selectedobject (= selectedModules)
+			for (int n = 0;n < slots.nSlots;n++){
 				//check if the n'th addedmodules in the array is empty
-				print ("modSlots.addedModules[n] = " + modSlots.addedModules[n]);
-				if (modSlots.addedModules[n] == null && !wasPlaced){
+				if (slots.addedModules[n] == null && !wasPlaced){
+					transform.parent = targetObject.transform;
+
 					//move to the right position
 					transform.localPosition = new Vector2 (0 - modSize * 1.2f * (n + 1), 0);
+					transform.localRotation = Quaternion.Euler (0,0,0);
 
 					//save ref of this module on ship's ModuleSlots
-					modSlots.addedModules[n] = this;
+					slots.addedModules[n] = this;
+					wasPlacedAtSpot = n;
+					myParent = targetObject.gameObject;
 
-					print ("addedmods[n] = " + modSlots.addedModules[n]);
+					//increase the amount of modules attached
+					targetObject.GetComponent<Ship> ().nModulesAttached++;
 
 					wasPlaced = true;
 				}
 			}
 		}
 
+		//if planet
+		if (targetObject.tag == "Planet") {
+			//get ref to the planets modslots
+			Planet targetPlanet = targetObject.GetComponent<Planet>();
+			ModuleSlots slots = targetPlanet.modSlots;
+
+			//add this planet to the empire
+			Empire.instance.AddPlanet (targetPlanet);
+
+			//for each selectedobject (= selectedModules)
+			for (int n = 0;n < slots.nSlots;n++){
+				//check if the n'th addedmodules in the array is empty
+				if (slots.addedModules [n] == null && !wasPlaced) {
+					transform.parent = targetObject.transform;
+
+					//determine new position and place, not exactly working perfectly yet
+					float angle = n * Mathf.PI * 2f / slots.nSlots;
+					float newRadius = targetPlanet.GetComponent<CircleCollider2D> ().radius + modSize;
+					float x = newRadius * Mathf.Cos (angle);
+					float y = newRadius * Mathf.Sin (angle);
+
+					//gaat niet goed omdat module collider tegen planet botst bij plaatsing, aka berekening klopt niet.. getest door collider trigger te maken
+					transform.localPosition = new Vector2 (x, y);
+					//print ("angle = " + angle + ", newRadius = " + newRadius + ", transform.localPosition = " + transform.localPosition + ", targetPlanet.nModulesAttached = " + targetPlanet.nModulesAttached);
+					//print ("targetPlanet.planetSize = " + targetPlanet.planetSize + ", modsize = " + modSize);
+
+					//set rotation relative to parent
+					transform.localRotation = Quaternion.Euler (0f, 0f, angle * Mathf.Rad2Deg);
+
+					//save ref of this module on ship's ModuleSlots
+					slots.addedModules [n] = this;
+					wasPlacedAtSpot = n;
+					myParent = targetObject.gameObject;
+
+					//update the planets number of modules attached
+					targetPlanet.nModulesAttached++;
+
+					//
+					wasPlaced = true;
+				}
+			}
+		}
+	}
+
+	public void DetachModule(){
+		wasPlaced = false;
+
+		if (myParent.GetComponent<Ship>()){
+			Ship myparentShip = myParent.GetComponent<Ship>();
+
+			myparentShip.modSlots.addedModules.SetValue(null,wasPlacedAtSpot);
+
+			myparentShip.nModulesAttached--;
+		}
+		if (myParent.GetComponent<Planet>()){
+			Planet myParentPlanet = myParent.GetComponent<Planet> ();
+
+			myParentPlanet.nModulesAttached--;
+
+			if (myParentPlanet.nModulesAttached == 0){
+				Empire.instance.RemovePlanet(myParentPlanet);
+			}
+
+			myParentPlanet.modSlots.addedModules.SetValue(null,wasPlacedAtSpot);
+		}
+	}
+
+	//@@ does nog work YET!
+	//runs in selectionmaster, if myparent is ship and right after detach module has run
+	public void ReOrder(){
+		int n = 0;
+		ModuleSlots slots = myParent.gameObject.GetComponent<Ship>().modSlots;
+		foreach (Module mod in slots.addedModules){
+			print ("mod =" + mod + ", n = " + n);
+			//mod.DetachModule ();
+			//mod.AttachModule (myParent);
+
+			//mod.gameObject.transform.localPosition = new Vector2 (0 - modSize * 1.2f * (n + 1), 0);
+			n++;
+		}
 	}
 
 }
-
-	/*
-	//is supposed to work for entire selection, don't need that crap! just attach a single module and run foreach selectedObjects (modules) from selectionmaster
-	public void AttachModule (GameObject target){
-		print (target);
-		if (target.tag == "Planet") {
-			//save Planet component on target
-			planet = target;
-			homePlanet = target.GetComponent<Planet>();
-			print ("homePlanet = " + homePlanet + ", homePlanet.isScanned = " + homePlanet.isScanned + ", homePlanet.nBuildingSlots = " + homePlanet.nBuildingSlots);
-
-
-			//check if targetplanet has been scanned
-			if (homePlanet.isScanned) {
-				for (int n = 0; n < homePlanet.nBuildingSlots; n++) {
-					//if less modules have been attached then there have been iterations of the loop
-					if (homePlanet.nModulesAttached <= n) {
-						//save module on planet
-						homePlanet.buildingSlots [n] = gameObject;
-
-						//set planet as parent
-						transform.parent = target.transform;
-
-						//determine new position and place, not exactly working perfectly yet
-						float angle = n * Mathf.PI * 2f / homePlanet.nBuildingSlots;
-						float newRadius = homePlanet.planetSize * homePlanet.transform.localScale.x * 2 + spriteSize * transform.localScale.x * 2;
-						float x = newRadius * Mathf.Cos (angle);
-						float y = newRadius * Mathf.Sin (angle);
-						//gaat niet goed omdat module collider tegen planet botst bij plaatsing, aka berekening klopt niet.. getest door collider trigger te maken
-						transform.localPosition = new Vector2 (x, y);
-						print ("angle = " + angle + ", newRadius = " + newRadius + ", transform.localPosition = " + transform.localPosition + ", homePlanet.nModulesAttached = " + homePlanet.nModulesAttached);
-						print ("homePlanet.planetSize = " + homePlanet.planetSize + ", spriteSize = " + spriteSize);
-
-						//set rotation relative to parent
-						transform.localRotation = Quaternion.Euler (0f, 0f, angle * Mathf.Rad2Deg);
-
-						//update module count on planet
-						homePlanet.nModulesAttached++;
-						currentRes = homePlanet.currentRes;
-
-						//add this module to the currentResources modList
-						homePlanet.currentRes.modList.Add (this);
-						empire.modules.Add (this);
-						empire.planets.Add (homePlanet);
-						empire.empireUIController.UpdateEmpireUI ();
-
-						break;
-					}
-				}
-				hasLanded = true;
-			}
-		}
-		if (target.tag == "Ship") {
-			//need to check if slot is available, if not, check next one
-			Ship ship = target.GetComponent<Ship> ();
-			int nSlots = ship.nModuleSlots;
-			for (int m = 0; m < nSlots; m++) {
-				if (ship.modules [m] == null) { 
-					//print ("!ship.modules [m]" + !ship.modules [m] + ", m = " + m);
-					//save Module on ship
-					ship.modules [m] = gameObject;
-
-					//set ship as parent, determine position and place
-					transform.parent = target.transform;
-					transform.localPosition = new Vector2 (-spriteSize - sizeBuffer - (m) * (spriteSize + sizeBuffer), 0);
-					transform.rotation = new Quaternion (0, 0, 0, 0);
-
-					//update module count on planet, if module was landed before
-					if (hasLanded) {
-						homePlanet.nModulesAttached--;
-					}
-
-					//set
-					currentRes = ship.currentRes;
-
-					break;
-				}
-			}
-
-			hasLanded = false;
-			//print ("Succesfully attached to ship, hasLanded = " + hasLanded);
-		}
-	}
-	*/
-
