@@ -108,7 +108,6 @@ public class CameraController : MonoBehaviour {
 		if (isFocussed && SelectionMaster.instance.selectedPlanets.Count == 1){
 			Focus(SelectionMaster.instance.selectedObjects[0].gameObject.GetComponent<Transform>());
 		}
-
 		//print ("count = " + SelectionMaster.instance.selectedPlanets.Count);
 	}
 

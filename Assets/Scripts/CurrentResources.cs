@@ -68,6 +68,13 @@ public class CurrentResources : MonoBehaviour {
 					res [q].ApplyChange ();
 				}
 
+				/*
+				//update empire based on new amount
+				for (int q = 0; q < res.Length; q++) {
+					Empire.instance.currentRes.res[q].amount += res[q].amount;
+					print ("Empire.instance.currentRes.res[q] = " + Empire.instance.currentRes.res[q].amount + ", res[q].amount = " +  res[q].amount);
+				}
+				*/
 
 				//check for InfoWindow and update that
 				//CheckForInfoWindowAndUpdateThat ();

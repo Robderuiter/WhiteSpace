@@ -6,7 +6,11 @@ public class Empire : MonoBehaviour {
 
 	public List<Planet> planets = new List<Planet>();
 	public List<Ship> ships = new List<Ship>();
-	public List<Resource> resource = new List<Resource>();
+	//public List<Resource> resource = new List<Resource>();
+
+	public Resource[] res;
+	public CurrentResources currentRes;
+
 
 	public EmpireUIController empireUIController;
 
@@ -16,6 +20,17 @@ public class Empire : MonoBehaviour {
 		instance = this;
 
 		empireUIController = gameObject.AddComponent<EmpireUIController>();
+
+		currentRes = gameObject.AddComponent<CurrentResources>();
+
+		//res = new Resource[7]{pop, food, water, oxygen, power, flora, fauna};
+	}
+
+	void Update(){
+		//foreach (Planet planet in planets) {
+			//currentRes.pop.amount = currentRes.pop.amount + planet.currentRes.pop.amount;
+			//print (currentRes.pop.amount);
+		//}
 	}
 
 	public void AddPlanet(Planet planet){

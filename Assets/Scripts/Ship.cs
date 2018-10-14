@@ -135,6 +135,7 @@ public class Ship : MonoBehaviour {
 	}
 
 	//default unity OnDestroy()
+	//@@ currently gives an MissingReferenceException when i stop playing the scene
 	void OnDestroy(){
 		Empire.instance.RemoveShip (this);
 	}
