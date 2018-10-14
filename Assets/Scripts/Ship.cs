@@ -37,10 +37,23 @@ public class Ship : MonoBehaviour {
 	public string type;
 	public Sprite flavorSprite;
 
+	//health points
+	float currentHP;
+	float maxHP = 100;
+
+
+	public HealthBar hpBar;
+
 	void Awake(){
 		defName = "SS Hammer";
 		type = "Cargo Ship";
 		flavorSprite = Resources.Load<Sprite> ("FlavorSprites/shipflavor");
+
+		hpBar = gameObject.AddComponent<HealthBar>();
+		hpBar.maxHP = maxHP;
+		hpBar.currentHP = maxHP;
+		hpBar.transform.position = new Vector2(0,0);
+		hpBar.enabled = false;
 	}
 
 	// Use this for initialization
