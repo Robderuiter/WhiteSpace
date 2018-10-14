@@ -45,24 +45,27 @@ public class SelectionMaster : MonoBehaviour {
 	//ui
 	GameObject infoWindowGO;
 	//InfoWindow infoWindow;
+	public bool uiButtonWasPressed = false;
 
 	//called during creation, used for internal refs and settings
 	void Awake(){
+		//set static (global) instance
+		instance = this;
+
 		//create selectionBox texture
 		selectionBoxTexture = new Texture2D(1,1);
 		selectionBoxTexture.SetPixel (0,0,new Color(0,0,0,0.1f));
 		selectionBoxTexture.Apply ();
 
-		//set static (global) instance
-		instance = this;
-
+		//ref and disable collider
 		selectBox = gameObject.GetComponent<BoxCollider2D> ();
 		selectBox.enabled = false;
 
-		//
+		//set selection bools to false
 		isRightClick = false;
 		isLeftClick = false;
 		isSingleClick = false;
+		uiButtonWasPressed = false;
 	}
 
 	//called after every other instance has been created, used for external refs
@@ -90,9 +93,13 @@ public class SelectionMaster : MonoBehaviour {
 		//start selecting stuff on left mousebuttonup
 		if (Input.GetMouseButtonUp(0)){
 			//general reset
-			ClearSelections ();
-			infoWindowGO.SetActive (false);
-			camController.isFocussed = false;
+
+			//this if is because of camcontroller Focus() on UIButton: OnClick() is earlier than mousebuttonup
+			if (!uiButtonWasPressed) {
+				ClearSelections ();
+				infoWindowGO.SetActive (false);
+				camController.isFocussed = false;
+			}
 
 			//decide which click it is
 			isLeftClick = true;
@@ -118,6 +125,9 @@ public class SelectionMaster : MonoBehaviour {
 
 			//interesting: selectedobjects.count is still 0 here, takes too long to filter through selection :P
 			//print ("selectedObjects.count = " + selectedObjects.Count);
+
+			//used by uiButton for Focus()
+			uiButtonWasPressed = false;
 		} 
 		//this is where you turn off the selectionbox, and so where postselectionfiltering should apply
 		else if(selectBox.isActiveAndEnabled && isLeftClick){
@@ -177,29 +187,6 @@ public class SelectionMaster : MonoBehaviour {
 				ClearSelections();
 			}
 		}
-
-
-		/*
-		//if right mouse button, command
-		if (Input.GetMouseButtonUp (1)) {
-			//probeersel camera focus on planet
-			camController.isFocussed = false;
-
-			//needed for SelectionBoxCollider class
-			isLeftClick = false;
-			isRightClick = true;
-
-
-			//needed for SetSelectionBox()
-			isSingleClick = true;
-			//##selectionStartPosForWorld = Input.mousePosition;
-			selectionEndPos = Input.mousePosition;
-
-			//SetSelectionBox ();
-		} else if (isRightClick && selectedWithRMB.Count > 0) {
-
-		}
-		*/
 	}
 
 	//drawing the box visually on screen
@@ -299,7 +286,7 @@ public class SelectionMaster : MonoBehaviour {
 	}
 		
 	//clear all the selection lists
-	void ClearSelections(){
+	public void ClearSelections(){
 		selectedObjects.Clear ();
 		selectedPlanets.Clear ();
 		selectedShips.Clear ();
@@ -310,7 +297,7 @@ public class SelectionMaster : MonoBehaviour {
 	}
 
 	//filter selection to selectedObjects list based on number of selectedStuff in each subcategory (ship, planet, module)
-	void FilterPostSelection(){
+	public void FilterPostSelection(){
 		//always prioritize selecting ships
 		if (selectedShips.Count > 0){
 			selectedObjects = selectedShips;

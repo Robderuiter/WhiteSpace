@@ -133,7 +133,7 @@ public class InfoWindow : MonoBehaviour {
 		UpdateAmountInfo (currentRes.oxygen, 10);
 		UpdateChangeInfo (currentRes.oxygen, 11);
 
-		UpdateAmountInfo (currentRes.power, 12);
-		UpdateChangeInfo (currentRes.power, 13);
+		UpdateAmountInfo (currentRes.stone, 12);
+		UpdateChangeInfo (currentRes.stone, 13);
 	}
 }

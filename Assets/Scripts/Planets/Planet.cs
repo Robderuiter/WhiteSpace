@@ -185,8 +185,8 @@ public class Planet : MonoBehaviour {
 	//store the storage variables declared on the planet subtypes (earthlike etc)
 	public void SaveStorageAmounts(){
 		storageAmount = new float[] {
-			popStorage, foodStorage, waterStorage, ironStorage, oxygenStorage, powerStorage, stoneStorage, 
-			researchStorage, pollutionStorage, floraStorage, faunaStorage, temperatureStorage, goldStorage
+			popStorage, foodStorage, waterStorage, oxygenStorage, stoneStorage, floraStorage, faunaStorage,
+			ironStorage, powerStorage, researchStorage, pollutionStorage, temperatureStorage, goldStorage
 		};
 	}
 

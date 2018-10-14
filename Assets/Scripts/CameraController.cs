@@ -103,8 +103,7 @@ public class CameraController : MonoBehaviour {
 			b = b * Time.deltaTime;
 			bgTransform.Translate (b);
 
-
-		//probeersel cam focus op planet
+		//cam focus on planet
 		if (isFocussed && SelectionMaster.instance.selectedPlanets.Count == 1){
 			Focus(SelectionMaster.instance.selectedObjects[0].gameObject.GetComponent<Transform>());
 		}

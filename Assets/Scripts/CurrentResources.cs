@@ -13,9 +13,9 @@ public class CurrentResources : MonoBehaviour {
 	public Food food;
 	public Water water;
 	public Oxygen oxygen;
-	public Power power;
 	public Flora flora;
 	public Fauna fauna;
+	public Stone stone;
 
 	//timer
 	public bool isActive = false;
@@ -40,11 +40,11 @@ public class CurrentResources : MonoBehaviour {
 		food = new Food (this);
 		water = new Water (this);
 		oxygen = new Oxygen (this);
-		power = new Power (this);
 		flora = new Flora (this);
 		fauna = new Fauna (this);
+		stone = new Stone (this);
 		//@@ volgorde moet later aangepast..
-		res = new Resource[7]{pop, food, water, oxygen, power, flora, fauna};
+		res = new Resource[7]{pop, food, water, oxygen, flora, fauna, stone};
 	}
 
 	void Update(){
@@ -97,9 +97,10 @@ public class CurrentResources : MonoBehaviour {
 		water.Calc (resourceMultipliers[2]);
 
 		oxygen.amount = Random.Range(resourceTresholds[8], resourceTresholds[9]);
-		power.amount = Random.Range(resourceTresholds[10], resourceTresholds[11]);
+		stone.amount = Random.Range (resourceTresholds [12], resourceTresholds [13]);
 		flora.amount = Random.Range (resourceTresholds[18], resourceTresholds[19]);
 		fauna.amount = Random.Range(resourceTresholds[20], resourceTresholds[21]);
+
 		/*
 		iron = Random.Range(resourceTresholds[6],resourceTresholds[7]);
 		oxygen = Random.Range(resourceTresholds[8],resourceTresholds[9]);
@@ -120,7 +121,7 @@ public class CurrentResources : MonoBehaviour {
 		food.storage = st[1];
 		water.storage = st[2];
 		oxygen.storage = st[3];
-		power.storage = st[4];
+		stone.storage = st [4];
 		flora.storage = st[5];
 		fauna.storage = st[6];
 	}
