@@ -4,24 +4,11 @@ using UnityEngine;
 
 public class Module : MonoBehaviour {
 
-
-	//float size;
-	//float spriteSize;
-	//float sizeBuffer;
-	/*
-	public Planet homePlanet;
-	public GameObject planet;
-	//Rigidbody2D rb;
-	public float waterOnModule;
-	*/
 	public bool hasLanded = false;
-	private bool extractsResources = true;
-	private bool extractsFood = false;
-	private bool extractsWater = false;
-	public float nWaterExtracted;
 
 	//resources
 	public CurrentResources currentRes;
+	public bool extractsResources;
 	public float nExtracted;
 	public float storage;
 
@@ -38,6 +25,17 @@ public class Module : MonoBehaviour {
 	public string defName;
 	public string type;
 	public Sprite flavorSprite;
+	public bool hasResources;
+
+	//resource stuff
+	public Resource[] res;
+	public Population pop;
+	public Food food;
+	public Water water;
+	public Oxygen oxygen;
+	public Flora flora;
+	public Fauna fauna;
+	public Stone stone;
 
 	public void Awake () {
 		modSize = GetComponent<SpriteRenderer>().size.x * transform.localScale.x;
@@ -45,23 +43,7 @@ public class Module : MonoBehaviour {
 
 	// Use this for initialization
 	public void Start () {
-		extractsWater = true;
-		nWaterExtracted = 100000;
-
 		empire = GameObject.Find("Empire").GetComponent<Empire>();
-	}
-
-	// Update is called once per frame
-	void Update () {
-		//this is here for testing, needs to be on a moduletype, not Module
-		if (hasLanded && extractsResources) {
-			if (extractsWater){
-				//ExtractResources (homePlanet.GetComponent<Water>());
-			}
-			if (extractsFood){
-				//ExtractResources (homePlanet.GetComponent<Food>());
-			}
-		}
 	}
 
 	public void AddToChange(Resource res, float n){
@@ -70,11 +52,17 @@ public class Module : MonoBehaviour {
 		//print ("res.amount = " + res.amount + ", currentRes = " + currentRes);
 	}
 
+	//meant as a generic function that runs on every submodule
 	public virtual void DoYourThang(){
 
 	}
 
-	//called from Selectionmaster, for each selected module
+	//run this on attach/detach module
+	public void GetCurrentRes (GameObject parent){
+		currentRes = parent.GetComponent<CurrentResources>();
+	}
+
+	//called from Selectionmaster for each selected module, attaches this module to the targeted gameobject
 	public void AttachModule (GameObject targetObject){
 		//if ship
 		if (targetObject.tag == "Ship") {
@@ -85,6 +73,7 @@ public class Module : MonoBehaviour {
 			for (int n = 0;n < slots.nSlots;n++){
 				//check if the n'th addedmodules in the array is empty
 				if (slots.addedModules[n] == null && !wasPlaced){
+					Ship targetShip = targetObject.GetComponent<Ship> ();
 					transform.parent = targetObject.transform;
 
 					//move to the right position
@@ -97,7 +86,15 @@ public class Module : MonoBehaviour {
 					myParent = targetObject.gameObject;
 
 					//increase the amount of modules attached
-					targetObject.GetComponent<Ship> ().nModulesAttached++;
+					targetShip.nModulesAttached++;
+
+					//add it to the currentResources to be added to calculations
+					targetShip.currentRes.modList.Add (this);
+					GetCurrentRes(targetObject);
+
+					if (hasResources){
+						//targetShip.currentRes.res = targetShip.currentRes.res + res;
+					}
 
 					wasPlaced = true;
 				}
@@ -141,6 +138,10 @@ public class Module : MonoBehaviour {
 					//update the planets number of modules attached
 					targetPlanet.nModulesAttached++;
 
+					//add it to the currentResources to be added to calculations
+					targetPlanet.currentRes.modList.Add (this);
+					GetCurrentRes(targetObject);
+
 					//
 					wasPlaced = true;
 				}
@@ -148,6 +149,7 @@ public class Module : MonoBehaviour {
 		}
 	}
 
+	//called from Selectionmaster if moved from an object
 	public void DetachModule(){
 		wasPlaced = false;
 
@@ -157,6 +159,10 @@ public class Module : MonoBehaviour {
 			myparentShip.modSlots.addedModules.SetValue(null,wasPlacedAtSpot);
 
 			myparentShip.nModulesAttached--;
+
+			if (hasResources){
+				myparentShip.currentRes.stone.amount = myparentShip.currentRes.stone.amount - storage;
+			}
 		}
 		if (myParent.GetComponent<Planet>()){
 			Planet myParentPlanet = myParent.GetComponent<Planet> ();

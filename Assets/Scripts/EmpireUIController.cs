@@ -21,6 +21,7 @@ public class EmpireUIController : MonoBehaviour {
 	GameObject planetImgPrefab;
 	GameObject planetIcon;
 	GameObject shipIcon;
+	Rect planetRect;
 
 	//ui
 	int uiTextSize = 16;
@@ -78,7 +79,9 @@ public class EmpireUIController : MonoBehaviour {
 		planetIcon.GetComponent<Image> ().sprite = planetIconSprite;
 
 		//set size
-		planetIcon.GetComponent<RectTransform> ().sizeDelta = new Vector2 (neededIconSize, neededIconSize);
+		RectTransform planetRect = planetIcon.GetComponent<RectTransform> ();
+		planetRect.sizeDelta = new Vector2 (neededIconSize, neededIconSize);
+
 
 		//set text
 		Text planetText = planetIcon.GetComponentInChildren<Text>();
@@ -92,7 +95,7 @@ public class EmpireUIController : MonoBehaviour {
 		planetIcon.transform.SetParent (empirePlanetsPanel.transform);
 		planetIcon.name = planet.defName;
 
-		planetIcon.transform.localPosition = new Vector2 (neededIconSize * Empire.instance.planets.Count * 1.2f, empirePlanetsRect.rect.height - neededIconSize - planetText.fontSize / 2);
+		planetIcon.transform.localPosition = new Vector2 (neededIconSize / 2 + 20 + neededIconSize * (Empire.instance.planets.Count - 1) * 1.2f, empirePlanetsRect.rect.height - neededIconSize - planetText.fontSize / 2);
 		planetIcon.transform.localRotation = new Quaternion (0,0,0,0);
 
 		planetIcons.Add (planetIcon);
@@ -123,7 +126,7 @@ public class EmpireUIController : MonoBehaviour {
 
 		shipIcon.transform.SetParent(empireShipsPanel.transform);
 
-		shipIcon.transform.localPosition = new Vector2 (neededIconSize * Empire.instance.ships.Count * 1.2f, empireShipsRect.rect.height - neededIconSize);
+		shipIcon.transform.localPosition = new Vector2 (neededIconSize / 2 + 20 + neededIconSize * (Empire.instance.ships.Count - 1) * 1.2f, empireShipsRect.rect.height - neededIconSize);
 
 		ship.name = "Ship " + n;
 		shipIcon.name = "Ship " + n;

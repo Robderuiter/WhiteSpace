@@ -2459,7 +2459,8 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
   m_ParentPrefab: {fileID: 100100000, guid: f140e1558f39e95408e8ff383338013c, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1104390829
@@ -2685,8 +2686,7 @@ GameObject:
 --- !u!114 &1139700612
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114888884423286616, guid: 2acf5ef9675548b458419ffc6312a56b,
-    type: 2}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1139700611}
   m_Enabled: 1
@@ -2850,6 +2850,7 @@ MonoBehaviour:
   defName: 
   type: 
   flavorSprite: {fileID: 0}
+  hpBar: {fileID: 0}
 --- !u!212 &1139700617
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4187,6 +4188,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1662171447}
   - component: {fileID: 1662171446}
+  - component: {fileID: 1662171448}
   m_Layer: 0
   m_Name: Empire
   m_TagString: Untagged
@@ -4222,6 +4224,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1662171448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1662171445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 363c58a3e66e7ed41875609543efaf51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resourceMultipliers: []
+  parentGameObject: {fileID: 0}
+  planet: {fileID: 0}
+  isActive: 0
+  mod: []
+  modList: []
 --- !u!1 &1676720614
 GameObject:
   m_ObjectHideFlags: 0

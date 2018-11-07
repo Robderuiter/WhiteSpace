@@ -6,7 +6,7 @@ public class Empire : MonoBehaviour {
 
 	public List<Planet> planets = new List<Planet>();
 	public List<Ship> ships = new List<Ship>();
-	//public List<Resource> resource = new List<Resource>();
+	public List<Resource> resources = new List<Resource>();
 
 	public Resource[] res;
 	public CurrentResources currentRes;
@@ -21,7 +21,8 @@ public class Empire : MonoBehaviour {
 
 		empireUIController = gameObject.AddComponent<EmpireUIController>();
 
-		currentRes = gameObject.AddComponent<CurrentResources>();
+		//currentRes = gameObject.AddComponent<CurrentResources>();
+		currentRes = GetComponent<EmpireRes>();
 
 		//res = new Resource[7]{pop, food, water, oxygen, power, flora, fauna};
 	}

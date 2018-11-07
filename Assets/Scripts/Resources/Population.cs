@@ -25,7 +25,7 @@ public class Population : Resource {
 	}
 
 	public override void Calc(float multiplier){
-		change = 0;
+		//change = 0;
 			if (myParentsResources.water.amount <= 0) {
 				change += Dehydrate ();
 				//Debug.Log ("Dehydrate(): " + change);

@@ -22,8 +22,8 @@ GameObject:
   - component: {fileID: 212364772601522772}
   - component: {fileID: 50997135725240458}
   - component: {fileID: 58298086398331782}
-  - component: {fileID: 114107782548263242}
   - component: {fileID: 114148446771319406}
+  - component: {fileID: 114196765000392050}
   m_Layer: 14
   m_Name: Miner
   m_TagString: Module
@@ -79,23 +79,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.2
---- !u!114 &114107782548263242
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1821779870839956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5dbbd76cd64f823469abfc5a9ef218b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resourceMultipliers: []
-  parentGameObject: {fileID: 0}
-  planet: {fileID: 0}
-  isActive: 0
-  mod: []
-  modList: []
 --- !u!114 &114148446771319406
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -108,11 +91,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hasLanded: 0
-  nWaterExtracted: 0
   currentRes: {fileID: 0}
-  targetRes: {fileID: 0}
+  extractsResources: 0
   nExtracted: 0
   storage: 0
+  wasPlaced: 0
+  myParent: {fileID: 0}
+  defName: 
+  type: 
+  flavorSprite: {fileID: 0}
+  hasResources: 0
+--- !u!114 &114196765000392050
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1821779870839956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5a8f6d407a567e428b056a9e8fc93e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resourceMultipliers: []
+  parentGameObject: {fileID: 0}
+  planet: {fileID: 0}
+  isActive: 0
+  mod: []
+  modList: []
 --- !u!212 &212364772601522772
 SpriteRenderer:
   m_ObjectHideFlags: 1

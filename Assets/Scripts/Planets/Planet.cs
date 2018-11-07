@@ -101,9 +101,6 @@ public class Planet : MonoBehaviour {
 		module = Resources.Load<GameObject>("Module");
 
 		nModulesAttached = 0;
-
-		//resource multipliers
-		//resourceMultipliers = new float[nResourceMultipliers];
 	}
 
 	public void Start(){
@@ -113,11 +110,11 @@ public class Planet : MonoBehaviour {
 		//save resource and treshold multiplier arrays
 		SaveResourceTresholds ();
 		SaveResourceMultipliers ();
-		currentRes.InitResources (resourceTresholds);
+		currentRes.InitResources ();
 
 		//save resource storage
 		SaveStorageAmounts ();
-		currentRes.InitStorage (storageAmount);
+		//currentRes.InitStorage (storageAmount);
 
 		//set planet sprite to current type
 		GetComponent<SpriteRenderer> ().sprite = sprite;

@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 50940867910380836}
   - component: {fileID: 61185917265252904}
   - component: {fileID: 82806384443498234}
-  - component: {fileID: 114888884423286616}
+  - component: {fileID: 114098179960730414}
   m_Layer: 13
   m_Name: Ship
   m_TagString: Ship
@@ -319,6 +319,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &114098179960730414
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1600781245001194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28f84b2c7fca7b7408abdd0fccbbffcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resourceMultipliers: []
+  parentGameObject: {fileID: 0}
+  planet: {fileID: 0}
+  isActive: 0
+  mod: []
+  modList: []
 --- !u!114 &114192453475084852
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -345,29 +362,13 @@ MonoBehaviour:
   doneRotating: 0
   doneMoving: 0
   hasToMove: 0
-  nModuleSlots: 6
-  modules: []
-  modSpriteSize: 0
-  modDistanceBuffer: 0
   isInEmpire: 0
   currentRes: {fileID: 0}
---- !u!114 &114888884423286616
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1600781245001194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5dbbd76cd64f823469abfc5a9ef218b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resourceMultipliers: []
-  parentGameObject: {fileID: 0}
-  planet: {fileID: 0}
-  isActive: 0
-  mod: []
-  modList: []
+  nModulesAttached: 0
+  defName: 
+  type: 
+  flavorSprite: {fileID: 0}
+  hpBar: {fileID: 0}
 --- !u!212 &212469394834948504
 SpriteRenderer:
   m_ObjectHideFlags: 1

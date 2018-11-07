@@ -9,7 +9,6 @@ public class ModuleSlots {
 	GameObject myParent;
 	public int nSlots;
 	public Module[] addedModules;
-	//public Transform[] moduleSlotPositions;
 
 	public ModuleSlots (GameObject parent){
 		//set myParent gameObject depending on whether you right clicked a planet or ship (in SelectionMaster)
@@ -30,21 +29,4 @@ public class ModuleSlots {
 		//instantiate (?) the addedModules array with nSlots as the length
 		addedModules = new Module[nSlots];
 	}
-
-	//@@ cant really do much placement without inheriting from monobehaviour.. :(
-	/*
-	public void CalcModuleSlotPositions(){
-		//init the array
-		moduleSlotPositions = new Transform[nSlots-1];
-
-		//planet
-		if (myParent.gameObject.tag == "Planet") {
-			transform.localPosition = new Vector2(0,0);
-		}
-		//ship
-		if (myParent.gameObject.tag == "Ship") {
-			transform.localPosition = new Vector2(0,0);
-		}
-	}
-	*/
 }

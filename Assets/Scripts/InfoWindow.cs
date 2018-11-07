@@ -33,10 +33,6 @@ public class InfoWindow : MonoBehaviour {
 		red = new Color (0.7f, 0, 0);
 	}
 
-	void Start(){
-		
-	}
-
 	void Update(){
 		//display detailed info on single selected object
 		if (SelectionMaster.instance.selectedObjects.Count == 1) {
